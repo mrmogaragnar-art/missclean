@@ -8,13 +8,13 @@ export const siteConfig = {
   city: "Valencia",
   lastOrderHour: 20,
 
-  /** Телефон для звонков (заглушка) */
-  phone: "+34 600 000 000",
-  phoneHref: "tel:+34600000000",
+  /** Телефон для звонков */
+  phone: "+34 651 156 133",
+  phoneHref: "tel:+34651156133",
 
   /** WhatsApp без пробелов и плюса в цифрах ссылки */
-  whatsapp: "+34 600 000 000",
-  whatsappHref: "https://wa.me/34600000000",
+  whatsapp: "+34 651 156 133",
+  whatsappHref: "https://wa.me/34651156133",
 
   /** Instagram профиль */
   instagram: "miss.clean.vln",
