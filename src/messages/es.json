@@ -1,0 +1,86 @@
+{
+  "nav": {
+    "services": "Servicios",
+    "calculator": "Calculadora",
+    "book": "Reservar",
+    "works": "Trabajos",
+    "contact": "Contacto"
+  },
+  "hero": {
+    "headline": "Limpieza con cariño en Valencia",
+    "sub": "Hogar impecable por horas o limpieza profunda de sofás, colchones y alfombras.",
+    "ctaBook": "Pedir presupuesto",
+    "ctaWhatsapp": "WhatsApp"
+  },
+  "services": {
+    "title": "Qué hacemos",
+    "sub": "Dos servicios claros, sin sorpresas.",
+    "hourlyTitle": "Limpieza por horas",
+    "hourlyDesc": "18 €/hora. Mínimo 2 horas. Ideal para mantención regular del hogar.",
+    "dryTitle": "Limpieza en seco",
+    "dryDesc": "Salida 40 € + precio según sofá, colchón o alfombra. Trabajamos bajo pedido.",
+    "deadline": "Último pedido del día: antes de las 20:00"
+  },
+  "calculator": {
+    "title": "Calcula tu precio",
+    "sub": "Elige el servicio y mira el total al instante.",
+    "hourlyTab": "Por horas",
+    "dryTab": "Limpieza en seco",
+    "hours": "Horas",
+    "total": "Total estimado",
+    "visitFee": "Salida",
+    "selectItems": "Elige lo que hay que limpiar",
+    "groups": {
+      "sofas": "Sofás",
+      "mattresses": "Colchones",
+      "carpets": "Alfombras"
+    },
+    "items": {
+      "sofa_2": "Sofá 2 plazas",
+      "sofa_3": "Sofá 3 plazas",
+      "sofa_corner": "Sofá rinconera",
+      "armchair": "Sillón",
+      "mattress_single": "Colchón individual",
+      "mattress_double": "Colchón doble",
+      "mattress_king": "Colchón king",
+      "carpet_small": "Alfombra pequeña",
+      "carpet_medium": "Alfombra mediana",
+      "carpet_large": "Alfombra grande"
+    },
+    "useInForm": "Usar en la solicitud"
+  },
+  "form": {
+    "title": "Solicitud sencilla",
+    "sub": "Te respondemos lo antes posible.",
+    "name": "Nombre",
+    "phone": "Teléfono",
+    "address": "Barrio / dirección",
+    "date": "Fecha deseada",
+    "service": "Servicio",
+    "serviceHourly": "Limpieza por horas",
+    "serviceDry": "Limpieza en seco",
+    "comment": "Comentario (opcional)",
+    "submit": "Enviar solicitud",
+    "sending": "Enviando…",
+    "success": "¡Listo! Hemos recibido tu solicitud.",
+    "error": "No se pudo enviar. Inténtalo de nuevo o escríbenos por WhatsApp.",
+    "required": "Campo obligatorio"
+  },
+  "works": {
+    "title": "Cómo trabajamos",
+    "sub": "Síguenos en Instagram — allí subimos el día a día.",
+    "openProfile": "Abrir Instagram",
+    "watch": "Ver video"
+  },
+  "contact": {
+    "title": "Contacto",
+    "sub": "Valencia · bajo pedido · último pedido antes de las 20:00",
+    "call": "Llamar",
+    "whatsapp": "WhatsApp",
+    "instagram": "Instagram"
+  },
+  "footer": {
+    "rights": "Miss Clean · Valencia",
+    "note": "Último pedido del día: 20:00"
+  }
+}

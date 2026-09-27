@@ -1,0 +1,86 @@
+{
+  "nav": {
+    "services": "Services",
+    "calculator": "Calculator",
+    "book": "Book",
+    "works": "Work",
+    "contact": "Contact"
+  },
+  "hero": {
+    "headline": "Caring cleaning in Valencia",
+    "sub": "A spotless home by the hour, or deep cleaning for sofas, mattresses and rugs.",
+    "ctaBook": "Get a quote",
+    "ctaWhatsapp": "WhatsApp"
+  },
+  "services": {
+    "title": "What we do",
+    "sub": "Two clear services, no surprises.",
+    "hourlyTitle": "Hourly cleaning",
+    "hourlyDesc": "€18/hour. Minimum 2 hours. Perfect for regular home upkeep.",
+    "dryTitle": "Upholstery cleaning",
+    "dryDesc": "€40 visit fee + price by sofa, mattress or rug. On-demand service.",
+    "deadline": "Last order of the day: before 20:00"
+  },
+  "calculator": {
+    "title": "Estimate your price",
+    "sub": "Pick a service and see the total instantly.",
+    "hourlyTab": "Hourly",
+    "dryTab": "Upholstery",
+    "hours": "Hours",
+    "total": "Estimated total",
+    "visitFee": "Visit fee",
+    "selectItems": "Select what needs cleaning",
+    "groups": {
+      "sofas": "Sofas",
+      "mattresses": "Mattresses",
+      "carpets": "Rugs"
+    },
+    "items": {
+      "sofa_2": "2-seater sofa",
+      "sofa_3": "3-seater sofa",
+      "sofa_corner": "Corner sofa",
+      "armchair": "Armchair",
+      "mattress_single": "Single mattress",
+      "mattress_double": "Double mattress",
+      "mattress_king": "King mattress",
+      "carpet_small": "Small rug",
+      "carpet_medium": "Medium rug",
+      "carpet_large": "Large rug"
+    },
+    "useInForm": "Use in booking form"
+  },
+  "form": {
+    "title": "Simple booking form",
+    "sub": "We’ll get back to you as soon as we can.",
+    "name": "Name",
+    "phone": "Phone",
+    "address": "Area / address",
+    "date": "Preferred date",
+    "service": "Service",
+    "serviceHourly": "Hourly cleaning",
+    "serviceDry": "Upholstery cleaning",
+    "comment": "Comment (optional)",
+    "submit": "Send request",
+    "sending": "Sending…",
+    "success": "Done! We’ve received your request.",
+    "error": "Couldn’t send. Try again or message us on WhatsApp.",
+    "required": "Required field"
+  },
+  "works": {
+    "title": "How we work",
+    "sub": "Follow us on Instagram — we post everyday work there.",
+    "openProfile": "Open Instagram",
+    "watch": "Watch video"
+  },
+  "contact": {
+    "title": "Contact",
+    "sub": "Valencia · on demand · last order before 20:00",
+    "call": "Call",
+    "whatsapp": "WhatsApp",
+    "instagram": "Instagram"
+  },
+  "footer": {
+    "rights": "Miss Clean · Valencia",
+    "note": "Last order of the day: 20:00"
+  }
+}
