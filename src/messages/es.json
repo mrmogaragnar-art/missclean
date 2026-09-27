@@ -27,6 +27,10 @@
     "hourlyTab": "Por horas",
     "dryTab": "Limpieza en seco",
     "hours": "Horas",
+    "hoursUnit": "h",
+    "decreaseHours": "Menos horas",
+    "increaseHours": "Más horas",
+    "minHoursHint": "Mínimo 2 horas",
     "total": "Total estimado",
     "visitFee": "Salida",
     "selectItems": "Elige lo que hay que limpiar",
@@ -69,6 +73,7 @@
   "works": {
     "title": "Cómo trabajamos",
     "sub": "Síguenos en Instagram — allí subimos el día a día.",
+    "galleryAlt": "Trabajo de limpieza Miss Clean",
     "openProfile": "Abrir Instagram",
     "watch": "Ver video"
   },

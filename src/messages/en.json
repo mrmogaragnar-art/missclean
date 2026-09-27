@@ -27,6 +27,10 @@
     "hourlyTab": "Hourly",
     "dryTab": "Upholstery",
     "hours": "Hours",
+    "hoursUnit": "h",
+    "decreaseHours": "Fewer hours",
+    "increaseHours": "More hours",
+    "minHoursHint": "Minimum 2 hours",
     "total": "Estimated total",
     "visitFee": "Visit fee",
     "selectItems": "Select what needs cleaning",
@@ -69,6 +73,7 @@
   "works": {
     "title": "How we work",
     "sub": "Follow us on Instagram — we post everyday work there.",
+    "galleryAlt": "Miss Clean cleaning work",
     "openProfile": "Open Instagram",
     "watch": "Watch video"
   },

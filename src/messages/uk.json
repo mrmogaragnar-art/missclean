@@ -27,6 +27,10 @@
     "hourlyTab": "Пододинно",
     "dryTab": "Хімчистка",
     "hours": "Години",
+    "hoursUnit": "год",
+    "decreaseHours": "Менше годин",
+    "increaseHours": "Більше годин",
+    "minHoursHint": "Мінімум 2 години",
     "total": "Орієнтовно разом",
     "visitFee": "Виїзд",
     "selectItems": "Що потрібно почистити",
@@ -69,6 +73,7 @@
   "works": {
     "title": "Як ми працюємо",
     "sub": "Підписуйтесь в Instagram — там показуємо будні.",
+    "galleryAlt": "Робота Miss Clean",
     "openProfile": "Відкрити Instagram",
     "watch": "Дивитись відео"
   },

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import { siteConfig, type DryCleanItemId } from "@/config/site";
 import { useI18n } from "@/i18n/I18nProvider";
@@ -21,6 +22,19 @@ const carpetIds: DryCleanItemId[] = [
   "carpet_medium",
   "carpet_large",
 ];
+
+const itemPhotos: Record<DryCleanItemId, string> = {
+  sofa_2: "/photos/sofa-2.jpg",
+  sofa_3: "/photos/sofa-3.jpg",
+  sofa_corner: "/photos/sofa-corner.jpg",
+  armchair: "/photos/armchair.jpg",
+  mattress_single: "/photos/mattress-single.jpg",
+  mattress_double: "/photos/mattress-double.jpg",
+  mattress_king: "/photos/mattress-king.jpg",
+  carpet_small: "/photos/carpet-small.jpg",
+  carpet_medium: "/photos/carpet-medium.jpg",
+  carpet_large: "/photos/carpet-large.jpg",
+};
 
 type Props = {
   onApply: (payload: {
@@ -48,22 +62,47 @@ export function Calculator({ onApply }: Props) {
     );
   }
 
+  function changeHours(delta: number) {
+    setHours((prev) =>
+      Math.max(siteConfig.prices.minHours, prev + delta),
+    );
+  }
+
   function renderGroup(title: string, ids: DryCleanItemId[]) {
     return (
       <div className="item-group">
         <h4>{title}</h4>
-        <div className="item-list">
+        <div className="item-grid">
           {ids.map((id) => {
             const active = items.includes(id);
             return (
               <button
                 key={id}
                 type="button"
-                className={`item-chip ${active ? "is-active" : ""}`}
+                className={`item-card ${active ? "is-active" : ""}`}
                 onClick={() => toggleItem(id)}
+                aria-pressed={active}
               >
-                <span>{t.calculator.items[id]}</span>
-                <strong>{siteConfig.prices.items[id]} €</strong>
+                <span className="item-card-media">
+                  <Image
+                    src={itemPhotos[id]}
+                    alt=""
+                    fill
+                    sizes="(max-width: 719px) 45vw, 180px"
+                    className="item-card-img"
+                  />
+                  {active ? (
+                    <span className="item-card-check" aria-hidden>
+                      ✓
+                    </span>
+                  ) : null}
+                </span>
+                <span className="item-card-body">
+                  <span className="item-card-name">{t.calculator.items[id]}</span>
+                  <strong className="item-card-price">
+                    {siteConfig.prices.items[id]} €
+                  </strong>
+                </span>
               </button>
             );
           })}
@@ -97,41 +136,74 @@ export function Calculator({ onApply }: Props) {
       </div>
 
       {tab === "hourly" ? (
-        <div className="calc-panel">
-          <label className="field">
-            <span>{t.calculator.hours}</span>
-            <input
-              type="number"
-              min={siteConfig.prices.minHours}
-              step={1}
-              value={hours}
-              onChange={(e) =>
-                setHours(
-                  Math.max(
-                    siteConfig.prices.minHours,
-                    Number(e.target.value) || siteConfig.prices.minHours,
-                  ),
-                )
-              }
+        <div className="calc-panel calc-panel-hourly">
+          <div className="calc-hourly-visual">
+            <Image
+              src="/photos/hourly.jpg"
+              alt=""
+              fill
+              sizes="(max-width: 719px) 100vw, 320px"
+              className="calc-hourly-img"
             />
-          </label>
-          <p className="muted">
-            {siteConfig.prices.hourly} € × {hours} = {total} €
-          </p>
+          </div>
+          <div className="calc-hourly-controls">
+            <p className="field-label">{t.calculator.hours}</p>
+            <div className="hours-stepper">
+              <button
+                type="button"
+                className="hours-btn"
+                onClick={() => changeHours(-1)}
+                disabled={hours <= siteConfig.prices.minHours}
+                aria-label={t.calculator.decreaseHours}
+              >
+                −
+              </button>
+              <span className="hours-value" aria-live="polite">
+                {hours}
+              </span>
+              <button
+                type="button"
+                className="hours-btn"
+                onClick={() => changeHours(1)}
+                aria-label={t.calculator.increaseHours}
+              >
+                +
+              </button>
+            </div>
+            <p className="calc-formula">
+              <span>
+                {siteConfig.prices.hourly} € × {hours} {t.calculator.hoursUnit}
+              </span>
+              <strong>
+                = {total} €
+              </strong>
+            </p>
+            <p className="muted calc-hint">{t.calculator.minHoursHint}</p>
+          </div>
         </div>
       ) : (
-        <div className="calc-panel">
-          <p className="visit-fee">
-            {t.calculator.visitFee}: <strong>{siteConfig.prices.visitFee} €</strong>
-          </p>
-          <p className="muted">{t.calculator.selectItems}</p>
+        <div className="calc-panel calc-panel-dry">
+          <div className="calc-dry-accent">
+            <Image
+              src="/photos/sofa-room.jpg"
+              alt=""
+              fill
+              sizes="(max-width: 719px) 100vw, 280px"
+              className="calc-dry-accent-img"
+            />
+          </div>
+          <div className="visit-fee-badge">
+            <span>{t.calculator.visitFee}</span>
+            <strong>{siteConfig.prices.visitFee} €</strong>
+          </div>
+          <p className="muted select-hint">{t.calculator.selectItems}</p>
           {renderGroup(t.calculator.groups.sofas, sofaIds)}
           {renderGroup(t.calculator.groups.mattresses, mattressIds)}
           {renderGroup(t.calculator.groups.carpets, carpetIds)}
         </div>
       )}
 
-      <div className="calc-total">
+      <div className="calc-total is-sticky">
         <span>{t.calculator.total}</span>
         <strong>{total} €</strong>
       </div>

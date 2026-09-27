@@ -31,11 +31,18 @@ export function Hero() {
       </div>
       <div className="hero-visual" aria-hidden>
         <Image
+          src="/photos/hero.jpg"
+          alt=""
+          fill
+          className="hero-photo"
+          priority
+          sizes="(max-width: 768px) 100vw, 55vw"
+        />
+        <Image
           src="/pattern-wave.png"
           alt=""
           fill
           className="hero-pattern"
-          priority
           sizes="(max-width: 768px) 100vw, 55vw"
         />
       </div>
