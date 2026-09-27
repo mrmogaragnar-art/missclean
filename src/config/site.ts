@@ -16,9 +16,9 @@ export const siteConfig = {
   whatsapp: "+34 600 000 000",
   whatsappHref: "https://wa.me/34600000000",
 
-  /** Instagram профиль (заглушка) */
-  instagram: "missclean.valencia",
-  instagramHref: "https://instagram.com/missclean.valencia",
+  /** Instagram профиль */
+  instagram: "miss.clean.vln",
+  instagramHref: "https://www.instagram.com/miss.clean.vln/",
 
   /**
    * Ссылки на рилсы/посты Instagram для блока на сайте.

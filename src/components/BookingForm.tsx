@@ -4,9 +4,15 @@ import { useEffect, useState, type FormEvent } from "react";
 import type { DryCleanItemId } from "@/config/site";
 import { siteConfig } from "@/config/site";
 import { useI18n } from "@/i18n/I18nProvider";
-import type { ServiceType } from "@/lib/pricing";
+import {
+  calcDryTotal,
+  calcHourlyTotal,
+  type ServiceType,
+} from "@/lib/pricing";
 
 export type CalcSnapshot = {
+  /** Changes on every "Use in form" click so the form always re-syncs */
+  id: number;
   service: ServiceType;
   hours: number;
   items: DryCleanItemId[];
@@ -31,14 +37,17 @@ export function BookingForm({ snapshot }: Props) {
   );
   const [comment, setComment] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
+  const [fromCalculator, setFromCalculator] = useState(false);
 
   useEffect(() => {
     if (!snapshot) return;
     setService(snapshot.service);
     setHours(snapshot.hours);
-    setItems(snapshot.items);
+    setItems([...snapshot.items]);
     setTotal(snapshot.total);
-  }, [snapshot]);
+    setFromCalculator(true);
+    // `id` changes on every calculator apply so re-clicks always sync the form.
+  }, [snapshot?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function detailsText() {
     if (service === "hourly") {
@@ -48,9 +57,22 @@ export function BookingForm({ snapshot }: Props) {
     return `${t.calculator.visitFee} ${siteConfig.prices.visitFee} € + ${labels || "—"}`;
   }
 
+  function onServiceChange(next: ServiceType) {
+    setService(next);
+    setFromCalculator(false);
+    if (next === "hourly") {
+      setTotal(calcHourlyTotal(hours));
+    } else {
+      setTotal(calcDryTotal(items));
+    }
+  }
+
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setStatus("sending");
+
+    const submitTotal =
+      service === "hourly" ? calcHourlyTotal(hours) : calcDryTotal(items);
 
     try {
       const res = await fetch("/api/booking", {
@@ -64,7 +86,7 @@ export function BookingForm({ snapshot }: Props) {
           service:
             service === "hourly" ? t.form.serviceHourly : t.form.serviceDry,
           details: detailsText(),
-          total: String(total),
+          total: String(submitTotal),
           comment,
           locale,
         }),
@@ -135,14 +157,16 @@ export function BookingForm({ snapshot }: Props) {
           <span>{t.form.service}</span>
           <select
             value={service}
-            onChange={(e) => setService(e.target.value as ServiceType)}
+            onChange={(e) => onServiceChange(e.target.value as ServiceType)}
           >
             <option value="hourly">{t.form.serviceHourly}</option>
             <option value="dry">{t.form.serviceDry}</option>
           </select>
         </label>
 
-        <div className="form-summary">
+        <div
+          className={`form-summary ${fromCalculator ? "is-from-calc" : ""}`}
+        >
           <p>{detailsText()}</p>
           <p>
             <strong>

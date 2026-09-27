@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       `Дата: ${date}`,
       `Услуга: ${service}`,
       `Детали: ${details || "—"}`,
-      `Сумма: ${total || "—"} €`,
+      `Сумма: ${total ? `${total} €` : "—"}`,
       `Комментарий: ${comment || "—"}`,
     ].join("\n");
 

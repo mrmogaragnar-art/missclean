@@ -210,9 +210,16 @@ export function Calculator({ onApply }: Props) {
 
       <button
         type="button"
-        className="btn btn-primary"
+        className="btn btn-primary calc-apply"
         onClick={() => {
-          onApply({ service: tab, hours, items, total });
+          // Send only the active tab’s data so the form never keeps stale
+          // hours from hourly while showing dry items (or the reverse).
+          onApply({
+            service: tab,
+            hours: tab === "hourly" ? hours : siteConfig.prices.minHours,
+            items: tab === "dry" ? [...items] : [],
+            total,
+          });
           document.getElementById("book")?.scrollIntoView({ behavior: "smooth" });
         }}
       >

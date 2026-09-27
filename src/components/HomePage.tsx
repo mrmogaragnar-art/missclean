@@ -14,6 +14,14 @@ import { Works } from "@/components/Works";
 export function HomePage() {
   const [snapshot, setSnapshot] = useState<CalcSnapshot | null>(null);
 
+  function applyFromCalculator(
+    payload: Omit<CalcSnapshot, "id">,
+  ) {
+    // Fresh id every click so BookingForm always re-applies, even if
+    // service/hours/items/total happen to match the previous snapshot.
+    setSnapshot({ ...payload, id: Date.now() });
+  }
+
   return (
     <>
       <VisitTracker />
@@ -21,7 +29,7 @@ export function HomePage() {
       <main>
         <Hero />
         <Services />
-        <Calculator onApply={setSnapshot} />
+        <Calculator onApply={applyFromCalculator} />
         <BookingForm snapshot={snapshot} />
         <Works />
         <Contact />
