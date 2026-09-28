@@ -5,11 +5,18 @@ import {
   useCallback,
   useEffect,
   useRef,
+  useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { useI18n } from "@/i18n/I18nProvider";
 
 type Point = { x: number; y: number };
+
+type ToolPos = {
+  x: number;
+  y: number;
+  visible: boolean;
+};
 
 export function BeforeAfter() {
   const { t } = useI18n();
@@ -19,6 +26,7 @@ export function BeforeAfter() {
   const strokesRef = useRef<[Point, Point][]>([]);
   const activeRef = useRef(false);
   const lastRef = useRef<Point | null>(null);
+  const [tool, setTool] = useState<ToolPos>({ x: 0, y: 0, visible: false });
 
   const pointFromEvent = useCallback((e: { clientX: number; clientY: number }) => {
     const canvas = canvasRef.current;
@@ -28,6 +36,17 @@ export function BeforeAfter() {
       x: (e.clientX - rect.left) / rect.width,
       y: (e.clientY - rect.top) / rect.height,
     };
+  }, []);
+
+  const moveTool = useCallback((e: { clientX: number; clientY: number }) => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    const rect = stage.getBoundingClientRect();
+    setTool({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+      visible: true,
+    });
   }, []);
 
   const erase = useCallback((a: Point, b: Point) => {
@@ -98,6 +117,7 @@ export function BeforeAfter() {
   function onPointerDown(e: ReactPointerEvent<HTMLCanvasElement>) {
     activeRef.current = true;
     e.currentTarget.setPointerCapture(e.pointerId);
+    moveTool(e);
     const p = pointFromEvent(e);
     lastRef.current = p;
     strokesRef.current.push([p, p]);
@@ -105,6 +125,7 @@ export function BeforeAfter() {
   }
 
   function onPointerMove(e: ReactPointerEvent<HTMLCanvasElement>) {
+    moveTool(e);
     if (!activeRef.current || !lastRef.current) return;
     const next = pointFromEvent(e);
     strokesRef.current.push([lastRef.current, next]);
@@ -115,8 +136,21 @@ export function BeforeAfter() {
   function onPointerUp(e: ReactPointerEvent<HTMLCanvasElement>) {
     activeRef.current = false;
     lastRef.current = null;
+    if (e.pointerType === "touch" || e.pointerType === "pen") {
+      setTool((prev) => ({ ...prev, visible: false }));
+    }
     if (e.currentTarget.hasPointerCapture(e.pointerId)) {
       e.currentTarget.releasePointerCapture(e.pointerId);
+    }
+  }
+
+  function onPointerEnter(e: ReactPointerEvent<HTMLCanvasElement>) {
+    if (e.pointerType === "mouse") moveTool(e);
+  }
+
+  function onPointerLeave() {
+    if (!activeRef.current) {
+      setTool((prev) => ({ ...prev, visible: false }));
     }
   }
 
@@ -134,7 +168,7 @@ export function BeforeAfter() {
 
       <div
         ref={stageRef}
-        className="ba-stage"
+        className={`ba-stage ${tool.visible ? "is-tool-on" : ""}`}
         aria-label={t.beforeAfter.aria}
       >
         <Image
@@ -154,6 +188,16 @@ export function BeforeAfter() {
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerUp}
+          onPointerEnter={onPointerEnter}
+          onPointerLeave={onPointerLeave}
+        />
+        <img
+          src="/cursor-nozzle.png"
+          alt=""
+          className={`ba-tool ${tool.visible ? "is-visible" : ""}`}
+          style={{ left: `${tool.x}px`, top: `${tool.y}px` }}
+          draggable={false}
+          aria-hidden
         />
         <span className="ba-badge">{t.beforeAfter.badge}</span>
       </div>
