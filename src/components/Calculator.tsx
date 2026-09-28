@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { siteConfig, type DryCleanItemId } from "@/config/site";
 import { useI18n } from "@/i18n/I18nProvider";
 import { calcDryTotal, calcHourlyTotal, type ServiceType } from "@/lib/pricing";
@@ -42,11 +42,29 @@ type Props = {
   }) => void;
 };
 
+function readServiceFromHash(): ServiceType | null {
+  if (typeof window === "undefined") return null;
+  const hash = window.location.hash;
+  if (hash.includes("dry")) return "dry";
+  if (hash.includes("hourly")) return "hourly";
+  return null;
+}
+
 export function Calculator({ onApply }: Props) {
   const { t } = useI18n();
   const [tab, setTab] = useState<ServiceType>("hourly");
   const [hours, setHours] = useState<number>(siteConfig.prices.minHours);
   const [items, setItems] = useState<DryCleanItemId[]>([]);
+
+  useEffect(() => {
+    function applyHash() {
+      const next = readServiceFromHash();
+      if (next) setTab(next);
+    }
+    applyHash();
+    window.addEventListener("hashchange", applyHash);
+    return () => window.removeEventListener("hashchange", applyHash);
+  }, []);
 
   const total = useMemo(() => {
     if (tab === "hourly") return calcHourlyTotal(hours);
@@ -115,34 +133,62 @@ export function Calculator({ onApply }: Props) {
         <p>{t.calculator.sub}</p>
       </div>
 
-      <div className="tabs">
+      <p className="service-pick-label">{t.calculator.pickService}</p>
+      <div className="service-pick" role="tablist" aria-label={t.calculator.pickService}>
         <button
           type="button"
-          className={tab === "hourly" ? "is-active" : undefined}
+          role="tab"
+          aria-selected={tab === "hourly"}
+          className={`service-pick-card ${tab === "hourly" ? "is-active" : ""}`}
           onClick={() => setTab("hourly")}
         >
-          {t.calculator.hourlyTab}
+          <span className="service-pick-media">
+            <Image
+              src="/photos/hourly.jpg"
+              alt=""
+              fill
+              sizes="(max-width: 719px) 50vw, 280px"
+              className="service-pick-img"
+            />
+          </span>
+          <span className="service-pick-body">
+            <span className="service-pick-title">{t.calculator.hourlyTab}</span>
+            <span className="service-pick-desc">{t.calculator.hourlyHint}</span>
+            <span className="service-pick-price">
+              {siteConfig.prices.hourly} € / {t.calculator.hoursUnit}
+            </span>
+          </span>
         </button>
+
         <button
           type="button"
-          className={tab === "dry" ? "is-active" : undefined}
+          role="tab"
+          id="calculator-dry"
+          aria-selected={tab === "dry"}
+          className={`service-pick-card ${tab === "dry" ? "is-active" : ""}`}
           onClick={() => setTab("dry")}
         >
-          {t.calculator.dryTab}
+          <span className="service-pick-media">
+            <Image
+              src="/photos/upholstery.jpg"
+              alt=""
+              fill
+              sizes="(max-width: 719px) 50vw, 280px"
+              className="service-pick-img"
+            />
+          </span>
+          <span className="service-pick-body">
+            <span className="service-pick-title">{t.calculator.dryTab}</span>
+            <span className="service-pick-desc">{t.calculator.dryHint}</span>
+            <span className="service-pick-price">
+              {t.calculator.visitFee} {siteConfig.prices.visitFee} €
+            </span>
+          </span>
         </button>
       </div>
 
       {tab === "hourly" ? (
         <div className="calc-panel calc-panel-hourly">
-          <div className="calc-hourly-visual">
-            <Image
-              src="/photos/hourly.jpg"
-              alt=""
-              fill
-              sizes="(max-width: 719px) 100vw, 320px"
-              className="calc-hourly-img"
-            />
-          </div>
           <div className="calc-hourly-controls">
             <p className="field-label">{t.calculator.hours}</p>
             <div className="hours-stepper">
@@ -178,15 +224,6 @@ export function Calculator({ onApply }: Props) {
         </div>
       ) : (
         <div className="calc-panel calc-panel-dry">
-          <div className="calc-dry-accent">
-            <Image
-              src="/photos/sofa-room.jpg"
-              alt=""
-              fill
-              sizes="(max-width: 719px) 100vw, 280px"
-              className="calc-dry-accent-img"
-            />
-          </div>
           <div className="visit-fee-badge">
             <span>{t.calculator.visitFee}</span>
             <strong>{siteConfig.prices.visitFee} €</strong>

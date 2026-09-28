@@ -48,6 +48,10 @@ export const siteConfig = {
       carpet_large: 80,
     } as const,
   },
+
+  /** Слоты для быстрой записи (локальное время Валенсии / устройства) */
+  bookingSlots: ["10:00", "12:00", "15:00", "18:00"] as const,
+  bookingDaysAhead: 7,
 } as const;
 
 export type DryCleanItemId = keyof typeof siteConfig.prices.items;

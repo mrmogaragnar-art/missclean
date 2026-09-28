@@ -9,6 +9,7 @@ export async function POST(request: Request) {
     const phone = String(body.phone ?? "").trim();
     const address = String(body.address ?? "").trim();
     const date = String(body.date ?? "").trim();
+    const slot = String(body.slot ?? "").trim();
     const service = String(body.service ?? "").trim();
     const details = String(body.details ?? "").trim();
     const total = String(body.total ?? "").trim();
@@ -30,7 +31,7 @@ export async function POST(request: Request) {
       `Имя: ${name}`,
       `Телефон: ${phone}`,
       `Адрес: ${address}`,
-      `Дата: ${date}`,
+      `Дата: ${date}${slot ? ` · ${slot}` : ""}`,
       `Услуга: ${service}`,
       `Детали: ${details || "—"}`,
       `Сумма: ${total ? `${total} €` : "—"}`,

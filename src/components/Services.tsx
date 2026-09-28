@@ -18,6 +18,11 @@ export function Services() {
     },
   ] as const;
 
+  function goCalc(service: "hourly" | "dry") {
+    window.location.hash = service === "dry" ? "calculator-dry" : "calculator-hourly";
+    document.getElementById("calculator")?.scrollIntoView({ behavior: "smooth" });
+  }
+
   return (
     <section className="section services" id="services">
       <div className="section-head">
@@ -29,10 +34,24 @@ export function Services() {
         <article className="service-offer">
           <h3>{t.services.hourlyTitle}</h3>
           <p>{t.services.hourlyDesc}</p>
+          <button
+            type="button"
+            className="btn btn-ghost service-offer-cta"
+            onClick={() => goCalc("hourly")}
+          >
+            {t.services.hourlyCta}
+          </button>
         </article>
-        <article className="service-offer">
+        <article className="service-offer service-offer-dry">
           <h3>{t.services.dryTitle}</h3>
           <p>{t.services.dryDesc}</p>
+          <button
+            type="button"
+            className="btn btn-primary service-offer-cta"
+            onClick={() => goCalc("dry")}
+          >
+            {t.services.dryCta}
+          </button>
         </article>
       </div>
 
