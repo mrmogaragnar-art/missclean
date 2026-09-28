@@ -1,6 +1,7 @@
 {
   "nav": {
     "services": "Servicios",
+    "beforeAfter": "Antes / después",
     "calculator": "Calculadora",
     "book": "Reservar",
     "works": "Trabajos",
@@ -8,18 +9,32 @@
   },
   "hero": {
     "headline": "Limpieza con cariño en Valencia",
-    "sub": "Hogar impecable por horas o limpieza profunda de sofás, colchones y alfombras.",
+    "sub": "Hogar impecable por horas o limpieza profunda de sofás, sillones, colchones y alfombras.",
     "ctaBook": "Pedir presupuesto",
     "ctaWhatsapp": "WhatsApp"
   },
   "services": {
     "title": "Qué hacemos",
-    "sub": "Dos servicios claros, sin sorpresas.",
+    "sub": "Limpieza por horas y limpieza en seco de tapicería: con cuidado, claro y sin sorpresas.",
     "hourlyTitle": "Limpieza por horas",
-    "hourlyDesc": "18 €/hora. Mínimo 2 horas. Ideal para mantención regular del hogar.",
+    "hourlyDesc": "18 €/hora, mínimo 2 horas. Mantenemos tu casa limpia de forma regular: cocina, baño, polvo y suelos, según tu lista.",
     "dryTitle": "Limpieza en seco",
-    "dryDesc": "Salida 40 € + precio según sofá, colchón o alfombra. Trabajamos bajo pedido.",
+    "dryDesc": "Salida desde 40 € + precio por sofá, sillón, silla, colchón o alfombra. Limpiamos en tu domicilio, bajo pedido.",
+    "safeTitle": "Química segura",
+    "safeDesc": "Usamos productos pensados para el hogar: sin olor agresivo y con fórmulas cuidadosas para telas y superficies.",
+    "familyTitle": "Pensado en niños y mascotas",
+    "familyDesc": "Elegimos el método de limpieza para que después puedas vivir en casa con tranquilidad — con peques y con animales.",
+    "qualityTitle": "Rapidez y calidad",
+    "qualityDesc": "Llegamos a tiempo, trabajamos con cuidado y dejamos un resultado realmente limpio, sin prisas de escaparate.",
     "deadline": "Último pedido del día: antes de las 20:00"
+  },
+  "beforeAfter": {
+    "title": "Antes y después",
+    "sub": "Desliza el dedo o el ratón sobre el sofá y verás cómo queda limpio.",
+    "before": "Antes",
+    "after": "Después",
+    "hint": "Arrastra el control o desliza sobre la foto",
+    "aria": "Comparación de sofá sucio y limpio"
   },
   "calculator": {
     "title": "Calcula tu precio",
@@ -32,10 +47,11 @@
     "increaseHours": "Más horas",
     "minHoursHint": "Mínimo 2 horas",
     "total": "Total estimado",
-    "visitFee": "Salida",
+    "visitFee": "Salida desde",
     "selectItems": "Elige lo que hay que limpiar",
     "groups": {
       "sofas": "Sofás",
+      "chairs": "Sillones y sillas",
       "mattresses": "Colchones",
       "carpets": "Alfombras"
     },
@@ -43,10 +59,11 @@
       "sofa_2": "Sofá 2 plazas",
       "sofa_3": "Sofá 3 plazas",
       "sofa_corner": "Sofá rinconera",
-      "armchair": "Sillón",
+      "armchair": "Sillón blando",
+      "chair": "Silla",
       "mattress_single": "Colchón individual",
       "mattress_double": "Colchón doble",
-      "mattress_king": "Colchón king",
+      "mattress_king": "Colchón king size",
       "carpet_small": "Alfombra pequeña",
       "carpet_medium": "Alfombra mediana",
       "carpet_large": "Alfombra grande"

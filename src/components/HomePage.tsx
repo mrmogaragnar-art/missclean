@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatedBackground } from "@/components/AnimatedBackground";
+import { BeforeAfter } from "@/components/BeforeAfter";
 import { BookingForm, type CalcSnapshot } from "@/components/BookingForm";
 import { Calculator } from "@/components/Calculator";
 import { Contact } from "@/components/Contact";
@@ -17,18 +19,18 @@ export function HomePage() {
   function applyFromCalculator(
     payload: Omit<CalcSnapshot, "id">,
   ) {
-    // Fresh id every click so BookingForm always re-applies, even if
-    // service/hours/items/total happen to match the previous snapshot.
     setSnapshot({ ...payload, id: Date.now() });
   }
 
   return (
     <>
+      <AnimatedBackground />
       <VisitTracker />
       <Header />
       <main>
         <Hero />
         <Services />
+        <BeforeAfter />
         <Calculator onApply={applyFromCalculator} />
         <BookingForm snapshot={snapshot} />
         <Works />

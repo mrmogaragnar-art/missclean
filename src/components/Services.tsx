@@ -1,10 +1,22 @@
 "use client";
 
-import Image from "next/image";
 import { useI18n } from "@/i18n/I18nProvider";
 
 export function Services() {
   const { t } = useI18n();
+  const points = [
+    { key: "safe", title: t.services.safeTitle, desc: t.services.safeDesc },
+    {
+      key: "family",
+      title: t.services.familyTitle,
+      desc: t.services.familyDesc,
+    },
+    {
+      key: "quality",
+      title: t.services.qualityTitle,
+      desc: t.services.qualityDesc,
+    },
+  ] as const;
 
   return (
     <section className="section services" id="services">
@@ -12,34 +24,27 @@ export function Services() {
         <h2>{t.services.title}</h2>
         <p>{t.services.sub}</p>
       </div>
-      <div className="services-grid">
-        <article className="service-block">
-          <div className="service-media">
-            <Image
-              src="/photos/hourly.jpg"
-              alt=""
-              fill
-              sizes="(max-width: 719px) 100vw, 50vw"
-              className="service-img"
-            />
-          </div>
+
+      <div className="services-offers">
+        <article className="service-offer">
           <h3>{t.services.hourlyTitle}</h3>
           <p>{t.services.hourlyDesc}</p>
         </article>
-        <article className="service-block">
-          <div className="service-media">
-            <Image
-              src="/photos/upholstery.jpg"
-              alt=""
-              fill
-              sizes="(max-width: 719px) 100vw, 50vw"
-              className="service-img"
-            />
-          </div>
+        <article className="service-offer">
           <h3>{t.services.dryTitle}</h3>
           <p>{t.services.dryDesc}</p>
         </article>
       </div>
+
+      <ul className="services-points">
+        {points.map((point) => (
+          <li key={point.key} className="service-point">
+            <h4>{point.title}</h4>
+            <p>{point.desc}</p>
+          </li>
+        ))}
+      </ul>
+
       <p className="deadline-note">{t.services.deadline}</p>
     </section>
   );

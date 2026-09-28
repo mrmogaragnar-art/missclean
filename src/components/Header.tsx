@@ -60,6 +60,9 @@ export function Header() {
         <a href="#services" onClick={closeMenu}>
           {t.nav.services}
         </a>
+        <a href="#before-after" onClick={closeMenu}>
+          {t.nav.beforeAfter}
+        </a>
         <a href="#calculator" onClick={closeMenu}>
           {t.nav.calculator}
         </a>

@@ -6,12 +6,8 @@ import { siteConfig, type DryCleanItemId } from "@/config/site";
 import { useI18n } from "@/i18n/I18nProvider";
 import { calcDryTotal, calcHourlyTotal, type ServiceType } from "@/lib/pricing";
 
-const sofaIds: DryCleanItemId[] = [
-  "sofa_2",
-  "sofa_3",
-  "sofa_corner",
-  "armchair",
-];
+const sofaIds: DryCleanItemId[] = ["sofa_2", "sofa_3", "sofa_corner"];
+const chairIds: DryCleanItemId[] = ["armchair", "chair"];
 const mattressIds: DryCleanItemId[] = [
   "mattress_single",
   "mattress_double",
@@ -28,6 +24,7 @@ const itemPhotos: Record<DryCleanItemId, string> = {
   sofa_3: "/photos/sofa-3.jpg",
   sofa_corner: "/photos/sofa-corner.jpg",
   armchair: "/photos/armchair.jpg",
+  chair: "/photos/chair.jpg",
   mattress_single: "/photos/mattress-single.jpg",
   mattress_double: "/photos/mattress-double.jpg",
   mattress_king: "/photos/mattress-king.jpg",
@@ -174,9 +171,7 @@ export function Calculator({ onApply }: Props) {
               <span>
                 {siteConfig.prices.hourly} € × {hours} {t.calculator.hoursUnit}
               </span>
-              <strong>
-                = {total} €
-              </strong>
+              <strong>= {total} €</strong>
             </p>
             <p className="muted calc-hint">{t.calculator.minHoursHint}</p>
           </div>
@@ -198,6 +193,7 @@ export function Calculator({ onApply }: Props) {
           </div>
           <p className="muted select-hint">{t.calculator.selectItems}</p>
           {renderGroup(t.calculator.groups.sofas, sofaIds)}
+          {renderGroup(t.calculator.groups.chairs, chairIds)}
           {renderGroup(t.calculator.groups.mattresses, mattressIds)}
           {renderGroup(t.calculator.groups.carpets, carpetIds)}
         </div>
@@ -212,8 +208,6 @@ export function Calculator({ onApply }: Props) {
         type="button"
         className="btn btn-primary calc-apply"
         onClick={() => {
-          // Send only the active tab’s data so the form never keeps stale
-          // hours from hourly while showing dry items (or the reverse).
           onApply({
             service: tab,
             hours: tab === "hourly" ? hours : siteConfig.prices.minHours,

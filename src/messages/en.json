@@ -1,6 +1,7 @@
 {
   "nav": {
     "services": "Services",
+    "beforeAfter": "Before / after",
     "calculator": "Calculator",
     "book": "Book",
     "works": "Work",
@@ -8,18 +9,32 @@
   },
   "hero": {
     "headline": "Caring cleaning in Valencia",
-    "sub": "A spotless home by the hour, or deep cleaning for sofas, mattresses and rugs.",
+    "sub": "A spotless home by the hour, or deep cleaning for sofas, chairs, mattresses and rugs.",
     "ctaBook": "Get a quote",
     "ctaWhatsapp": "WhatsApp"
   },
   "services": {
     "title": "What we do",
-    "sub": "Two clear services, no surprises.",
+    "sub": "Hourly cleaning and upholstery care — gentle, clear, and without surprises.",
     "hourlyTitle": "Hourly cleaning",
-    "hourlyDesc": "€18/hour. Minimum 2 hours. Perfect for regular home upkeep.",
+    "hourlyDesc": "€18/hour, minimum 2 hours. We keep your home clean on a regular rhythm: kitchen, bathroom, dust and floors — to your list.",
     "dryTitle": "Upholstery cleaning",
-    "dryDesc": "€40 visit fee + price by sofa, mattress or rug. On-demand service.",
+    "dryDesc": "Visit fee from €40 + price by sofa, armchair, chair, mattress or rug. We clean on-site, on demand.",
+    "safeTitle": "Safe chemistry",
+    "safeDesc": "We use home-friendly products: no harsh smell, with careful formulas for fabrics and surfaces.",
+    "familyTitle": "Kids and pets in mind",
+    "familyDesc": "We choose cleaning methods so you can live at home calmly afterwards — with little ones and pets.",
+    "qualityTitle": "Speed and quality",
+    "qualityDesc": "We arrive on time, work carefully, and finish with a truly clean result — not a rushed showpiece.",
     "deadline": "Last order of the day: before 20:00"
+  },
+  "beforeAfter": {
+    "title": "Before and after",
+    "sub": "Slide your finger or mouse across the sofa and watch it get clean.",
+    "before": "Before",
+    "after": "After",
+    "hint": "Drag the handle or swipe across the photo",
+    "aria": "Comparison of a dirty and clean sofa"
   },
   "calculator": {
     "title": "Estimate your price",
@@ -32,10 +47,11 @@
     "increaseHours": "More hours",
     "minHoursHint": "Minimum 2 hours",
     "total": "Estimated total",
-    "visitFee": "Visit fee",
+    "visitFee": "Visit fee from",
     "selectItems": "Select what needs cleaning",
     "groups": {
       "sofas": "Sofas",
+      "chairs": "Armchairs and chairs",
       "mattresses": "Mattresses",
       "carpets": "Rugs"
     },
@@ -43,10 +59,11 @@
       "sofa_2": "2-seater sofa",
       "sofa_3": "3-seater sofa",
       "sofa_corner": "Corner sofa",
-      "armchair": "Armchair",
+      "armchair": "Soft armchair",
+      "chair": "Chair",
       "mattress_single": "Single mattress",
       "mattress_double": "Double mattress",
-      "mattress_king": "King mattress",
+      "mattress_king": "King size mattress",
       "carpet_small": "Small rug",
       "carpet_medium": "Medium rug",
       "carpet_large": "Large rug"
