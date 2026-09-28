@@ -3,42 +3,126 @@
 import Image from "next/image";
 import {
   useCallback,
+  useEffect,
   useRef,
-  useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { useI18n } from "@/i18n/I18nProvider";
 
+type Point = { x: number; y: number };
+
 export function BeforeAfter() {
   const { t } = useI18n();
-  const [pos, setPos] = useState(28);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const dragging = useRef(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const dirtyRef = useRef<HTMLImageElement | null>(null);
+  const strokesRef = useRef<[Point, Point][]>([]);
+  const activeRef = useRef(false);
+  const lastRef = useRef<Point | null>(null);
 
-  const updateFromClientX = useCallback((clientX: number) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const next = ((clientX - rect.left) / rect.width) * 100;
-    setPos(Math.min(96, Math.max(4, next)));
+  const pointFromEvent = useCallback((e: { clientX: number; clientY: number }) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (e.clientX - rect.left) / rect.width,
+      y: (e.clientY - rect.top) / rect.height,
+    };
   }, []);
 
-  function onPointerDown(e: ReactPointerEvent<HTMLDivElement>) {
-    dragging.current = true;
+  const erase = useCallback((a: Point, b: Point) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.save();
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.lineWidth = w * 0.105;
+    ctx.beginPath();
+    ctx.moveTo(a.x * w, a.y * h);
+    ctx.lineTo(b.x * w, b.y * h);
+    ctx.stroke();
+    ctx.restore();
+  }, []);
+
+  const redraw = useCallback(() => {
+    const canvas = canvasRef.current;
+    const dirty = dirtyRef.current;
+    if (!canvas || !dirty || !dirty.complete) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.globalCompositeOperation = "source-over";
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(dirty, 0, 0, canvas.width, canvas.height);
+    for (const [a, b] of strokesRef.current) erase(a, b);
+  }, [erase]);
+
+  const resize = useCallback(() => {
+    const stage = stageRef.current;
+    const canvas = canvasRef.current;
+    if (!stage || !canvas) return;
+    const rect = stage.getBoundingClientRect();
+    const d = Math.min(window.devicePixelRatio || 1, 3);
+    canvas.width = Math.round(rect.width * d);
+    canvas.height = Math.round(rect.height * d);
+    redraw();
+  }, [redraw]);
+
+  useEffect(() => {
+    const dirty = new window.Image();
+    dirty.src = "/photos/sofa-before-dirty.png";
+    dirtyRef.current = dirty;
+
+    const onLoad = () => resize();
+    dirty.addEventListener("load", onLoad);
+
+    const stage = stageRef.current;
+    const observer =
+      typeof ResizeObserver !== "undefined" && stage
+        ? new ResizeObserver(() => resize())
+        : null;
+    if (stage && observer) observer.observe(stage);
+    else window.addEventListener("resize", resize);
+
+    return () => {
+      dirty.removeEventListener("load", onLoad);
+      observer?.disconnect();
+      window.removeEventListener("resize", resize);
+    };
+  }, [resize]);
+
+  function onPointerDown(e: ReactPointerEvent<HTMLCanvasElement>) {
+    activeRef.current = true;
     e.currentTarget.setPointerCapture(e.pointerId);
-    updateFromClientX(e.clientX);
+    const p = pointFromEvent(e);
+    lastRef.current = p;
+    strokesRef.current.push([p, p]);
+    erase(p, p);
   }
 
-  function onPointerMove(e: ReactPointerEvent<HTMLDivElement>) {
-    if (!dragging.current) return;
-    updateFromClientX(e.clientX);
+  function onPointerMove(e: ReactPointerEvent<HTMLCanvasElement>) {
+    if (!activeRef.current || !lastRef.current) return;
+    const next = pointFromEvent(e);
+    strokesRef.current.push([lastRef.current, next]);
+    erase(lastRef.current, next);
+    lastRef.current = next;
   }
 
-  function onPointerUp(e: ReactPointerEvent<HTMLDivElement>) {
-    dragging.current = false;
+  function onPointerUp(e: ReactPointerEvent<HTMLCanvasElement>) {
+    activeRef.current = false;
+    lastRef.current = null;
     if (e.currentTarget.hasPointerCapture(e.pointerId)) {
       e.currentTarget.releasePointerCapture(e.pointerId);
     }
+  }
+
+  function reset() {
+    strokesRef.current = [];
+    redraw();
   }
 
   return (
@@ -49,61 +133,34 @@ export function BeforeAfter() {
       </div>
 
       <div
-        ref={trackRef}
+        ref={stageRef}
         className="ba-stage"
-        role="img"
         aria-label={t.beforeAfter.aria}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
       >
-        <div className="ba-layer ba-after">
-          <Image
-            src="/photos/sofa-after.jpg"
-            alt=""
-            fill
-            sizes="(max-width: 719px) 100vw, 900px"
-            className="ba-img"
-            draggable={false}
-          />
-          <span className="ba-tag ba-tag-after">{t.beforeAfter.after}</span>
-        </div>
-
-        <div
-          className="ba-layer ba-before"
-          style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
-        >
-          <Image
-            src="/photos/sofa-before.jpg"
-            alt=""
-            fill
-            sizes="(max-width: 719px) 100vw, 900px"
-            className="ba-img ba-img-dirty"
-            draggable={false}
-          />
-          <span className="ba-stains" aria-hidden />
-          <span className="ba-tag ba-tag-before">{t.beforeAfter.before}</span>
-        </div>
-
-        <div className="ba-handle" style={{ left: `${pos}%` }} aria-hidden>
-          <span className="ba-handle-line" />
-          <span className="ba-handle-knob">⟷</span>
-        </div>
-
-        <label className="sr-only" htmlFor="ba-range">
-          {t.beforeAfter.hint}
-        </label>
-        <input
-          id="ba-range"
-          className="ba-range"
-          type="range"
-          min={4}
-          max={96}
-          value={pos}
-          onChange={(e) => setPos(Number(e.target.value))}
-          aria-valuetext={`${Math.round(pos)}%`}
+        <Image
+          src="/photos/sofa-after-clean.png"
+          alt=""
+          fill
+          sizes="(max-width: 719px) 100vw, 680px"
+          className="ba-img"
+          priority={false}
+          draggable={false}
         />
+        <canvas
+          ref={canvasRef}
+          className="ba-dirt"
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+        />
+        <span className="ba-badge">{t.beforeAfter.badge}</span>
+      </div>
+
+      <div className="ba-actions">
+        <button type="button" className="btn btn-ghost" onClick={reset}>
+          {t.beforeAfter.reset}
+        </button>
       </div>
 
       <p className="ba-hint">{t.beforeAfter.hint}</p>

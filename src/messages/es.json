@@ -29,12 +29,12 @@
     "deadline": "Último pedido del día: antes de las 20:00"
   },
   "beforeAfter": {
-    "title": "Antes y después",
-    "sub": "Desliza el dedo o el ratón sobre el sofá y verás cómo queda limpio.",
-    "before": "Antes",
-    "after": "Después",
-    "hint": "Arrastra el control o desliza sobre la foto",
-    "aria": "Comparación de sofá sucio y limpio"
+    "title": "Limpia el sofá",
+    "sub": "Pasa el dedo o el ratón por la tapicería.",
+    "badge": "Desliza para limpiar ✨",
+    "hint": "Pasa por el sofá — la suciedad desaparece",
+    "reset": "Empezar de nuevo",
+    "aria": "Comparación interactiva de sofá sucio y limpio"
   },
   "calculator": {
     "title": "Calcula tu precio",

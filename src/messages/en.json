@@ -29,12 +29,12 @@
     "deadline": "Last order of the day: before 20:00"
   },
   "beforeAfter": {
-    "title": "Before and after",
-    "sub": "Slide your finger or mouse across the sofa and watch it get clean.",
-    "before": "Before",
-    "after": "After",
-    "hint": "Drag the handle or swipe across the photo",
-    "aria": "Comparison of a dirty and clean sofa"
+    "title": "Clean the sofa",
+    "sub": "Swipe across the upholstery with your finger or mouse.",
+    "badge": "Swipe to clean ✨",
+    "hint": "Swipe the sofa — dirt disappears",
+    "reset": "Start over",
+    "aria": "Interactive dirty and clean sofa comparison"
   },
   "calculator": {
     "title": "Estimate your price",

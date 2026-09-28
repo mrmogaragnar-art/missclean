@@ -21,12 +21,13 @@ export const siteConfig = {
   instagramHref: "https://www.instagram.com/miss.clean.vln/",
 
   /**
-   * Ссылки на рилсы/посты Instagram для блока на сайте.
-   * Вставьте реальные URL — появятся кнопки «Смотреть».
+   * Ссылки на рилсы Instagram для блока «Как мы работаем».
+   * Вставьте/замените URL — появятся встроенные видео.
    */
   instagramEmbeds: [
-    "https://www.instagram.com/reel/PLACEHOLDER_1/",
-    "https://www.instagram.com/reel/PLACEHOLDER_2/",
+    "https://www.instagram.com/reel/DcSwe2UN7B7/",
+    "https://www.instagram.com/reel/DavBnKstQgG/",
+    "https://www.instagram.com/reel/DdrTRiANvnK/",
   ] as string[],
 
   prices: {

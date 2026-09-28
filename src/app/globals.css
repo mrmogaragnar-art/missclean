@@ -466,28 +466,16 @@ main {
 
 .ba-stage {
   position: relative;
-  aspect-ratio: 16 / 10;
-  max-height: 480px;
-  border-radius: calc(var(--radius) + 0.25rem);
+  width: min(100%, 680px);
+  margin: 0 auto;
+  aspect-ratio: 1;
+  border-radius: calc(var(--radius) + 0.35rem);
   overflow: hidden;
-  background: var(--cream-deep);
+  background: #f5eee7;
   box-shadow: var(--shadow);
-  touch-action: none;
-  cursor: ew-resize;
   user-select: none;
-}
-
-.ba-layer {
-  position: absolute;
-  inset: 0;
-}
-
-.ba-after {
-  z-index: 1;
-}
-
-.ba-before {
-  z-index: 2;
+  touch-action: none;
+  cursor: crosshair;
 }
 
 .ba-img {
@@ -495,94 +483,35 @@ main {
   pointer-events: none;
 }
 
-.ba-img-dirty {
-  filter: saturate(0.72) contrast(1.08) brightness(0.88) sepia(0.28);
-}
-
-.ba-stains {
+.ba-dirt {
   position: absolute;
   inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse 28% 22% at 32% 58%, rgba(92, 58, 36, 0.42), transparent 70%),
-    radial-gradient(ellipse 18% 16% at 62% 42%, rgba(74, 48, 28, 0.35), transparent 68%),
-    radial-gradient(ellipse 22% 18% at 74% 68%, rgba(110, 70, 42, 0.28), transparent 70%),
-    linear-gradient(120deg, rgba(42, 31, 26, 0.12), transparent 45%);
-  mix-blend-mode: multiply;
-}
-
-.ba-tag {
-  position: absolute;
-  top: 0.85rem;
-  z-index: 3;
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.82rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  backdrop-filter: blur(6px);
-}
-
-.ba-tag-before {
-  left: 0.85rem;
-  background: rgba(42, 31, 26, 0.72);
-  color: white;
-}
-
-.ba-tag-after {
-  right: 0.85rem;
-  background: rgba(255, 253, 249, 0.88);
-  color: var(--terracotta-dark);
-  border: 1px solid var(--line);
-}
-
-.ba-handle {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  z-index: 4;
-  width: 2px;
-  transform: translateX(-50%);
-  pointer-events: none;
-}
-
-.ba-handle-line {
-  display: block;
-  width: 2px;
-  height: 100%;
-  background: rgba(255, 253, 249, 0.95);
-  box-shadow: 0 0 0 1px rgba(42, 31, 26, 0.12);
-}
-
-.ba-handle-knob {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  background: var(--terracotta);
-  color: white;
-  font-size: 0.95rem;
-  font-weight: 800;
-  box-shadow: 0 8px 22px rgba(42, 31, 26, 0.22);
-  border: 2px solid rgba(255, 253, 249, 0.95);
-}
-
-.ba-range {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
   width: 100%;
   height: 100%;
-  margin: 0;
-  opacity: 0;
-  cursor: ew-resize;
-  appearance: none;
-  -webkit-appearance: none;
+  display: block;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.ba-badge {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 2;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.88);
+  color: var(--terracotta-dark);
+  font-size: 0.9rem;
+  font-weight: 700;
+  pointer-events: none;
+  box-shadow: 0 4px 15px rgba(42, 31, 26, 0.08);
+}
+
+.ba-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
 }
 
 .ba-hint {
@@ -959,6 +888,32 @@ main {
   margin-bottom: 1.35rem;
 }
 
+.works-reels {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1.35rem;
+}
+
+.works-reel {
+  position: relative;
+  margin: 0;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: var(--cream-deep);
+  box-shadow: var(--shadow);
+  min-height: 520px;
+}
+
+.works-reel-frame {
+  display: block;
+  width: 100%;
+  min-height: 520px;
+  height: 100%;
+  border: 0;
+  background: var(--cream-deep);
+}
+
 .works-shot {
   position: relative;
   margin: 0;
@@ -1165,6 +1120,16 @@ main {
     gap: 0.85rem;
   }
 
+  .works-reels {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .works-reel,
+  .works-reel-frame {
+    min-height: 560px;
+  }
+
   .booking-form {
     grid-template-columns: 1fr 1fr;
   }
@@ -1259,14 +1224,11 @@ main {
     gap: 0.65rem;
   }
 
-  .ba-stage {
-    aspect-ratio: 4 / 3;
-    max-height: none;
-  }
-
-  .ba-handle-knob {
-    width: 2.5rem;
-    height: 2.5rem;
+  .ba-badge {
+    left: 0.75rem;
+    top: 0.75rem;
+    font-size: 0.82rem;
+    padding: 0.4rem 0.7rem;
   }
 
   .tabs {
