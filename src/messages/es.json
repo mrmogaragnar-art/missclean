@@ -10,12 +10,17 @@
   "hero": {
     "headline": "Limpieza con cariño en Valencia",
     "sub": "Hogar impecable por horas o limpieza profunda de sofás, sillones, colchones y alfombras.",
-    "ctaBook": "Reservar en 2 pasos",
+    "pickLabel": "¿Qué necesitas?",
+    "ctaHourly": "Limpieza por horas",
+    "ctaHourlyHint": "Calcular y reservar",
+    "ctaDry": "Limpieza de tapicería",
+    "ctaDryHint": "Sofá, colchón, alfombra…",
+    "ctaBook": "Ir a reservar",
     "ctaWhatsapp": "WhatsApp"
   },
   "services": {
-    "title": "Qué hacemos",
-    "sub": "Limpieza por horas y limpieza en seco de tapicería: con cuidado, claro y sin sorpresas.",
+    "title": "Por qué Miss Clean",
+    "sub": "Cómo trabajamos, sin sorpresas.",
     "hourlyTitle": "Limpieza por horas",
     "hourlyDesc": "18 €/hora, mínimo 2 horas. Mantenemos tu casa limpia de forma regular: cocina, baño, polvo y suelos, según tu lista.",
     "hourlyCta": "Calcular limpieza",

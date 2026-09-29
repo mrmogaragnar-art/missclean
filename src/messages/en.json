@@ -10,12 +10,17 @@
   "hero": {
     "headline": "Caring cleaning in Valencia",
     "sub": "A spotless home by the hour, or deep cleaning for sofas, chairs, mattresses and rugs.",
-    "ctaBook": "Book in 2 steps",
+    "pickLabel": "What do you need?",
+    "ctaHourly": "Hourly cleaning",
+    "ctaHourlyHint": "Estimate and book",
+    "ctaDry": "Upholstery cleaning",
+    "ctaDryHint": "Sofa, mattress, rug…",
+    "ctaBook": "Skip to booking",
     "ctaWhatsapp": "WhatsApp"
   },
   "services": {
-    "title": "What we do",
-    "sub": "Hourly cleaning and upholstery care — gentle, clear, and without surprises.",
+    "title": "Why Miss Clean",
+    "sub": "How we work — no surprises.",
     "hourlyTitle": "Hourly cleaning",
     "hourlyDesc": "€18/hour, minimum 2 hours. We keep your home clean on a regular rhythm: kitchen, bathroom, dust and floors — to your list.",
     "hourlyCta": "Price hourly cleaning",

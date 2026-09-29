@@ -57,9 +57,6 @@ export function Header() {
         className={`site-nav ${menuOpen ? "is-open" : ""}`}
         aria-label="Main"
       >
-        <a href="#services" onClick={closeMenu}>
-          {t.nav.services}
-        </a>
         <a href="#before-after" onClick={closeMenu}>
           {t.nav.beforeAfter}
         </a>
@@ -71,6 +68,9 @@ export function Header() {
         </a>
         <a href="#works" onClick={closeMenu}>
           {t.nav.works}
+        </a>
+        <a href="#services" onClick={closeMenu}>
+          {t.nav.services}
         </a>
         <a href="#contact" onClick={closeMenu}>
           {t.nav.contact}
