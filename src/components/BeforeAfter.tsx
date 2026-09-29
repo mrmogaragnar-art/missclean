@@ -93,7 +93,7 @@ export function BeforeAfter() {
 
   useEffect(() => {
     const dirty = new window.Image();
-    dirty.src = "/photos/sofa-before-dirty.png?v=3";
+    dirty.src = "/photos/sofa-before-dirty.png";
     dirtyRef.current = dirty;
 
     const onLoad = () => resize();

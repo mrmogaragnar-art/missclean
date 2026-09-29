@@ -19,20 +19,18 @@ const carpetIds: DryCleanItemId[] = [
   "carpet_large",
 ];
 
-const PHOTO_V = "v3";
-
 const itemPhotos: Record<DryCleanItemId, string> = {
-  sofa_2: `/photos/sofa-2.jpg?${PHOTO_V}`,
-  sofa_3: `/photos/sofa-3.jpg?${PHOTO_V}`,
-  sofa_corner: `/photos/sofa-corner.jpg?${PHOTO_V}`,
-  armchair: `/photos/armchair.jpg?${PHOTO_V}`,
-  chair: `/photos/chair.jpg?${PHOTO_V}`,
-  mattress_single: `/photos/mattress-single.jpg?${PHOTO_V}`,
-  mattress_double: `/photos/mattress-double.jpg?${PHOTO_V}`,
-  mattress_king: `/photos/mattress-king.jpg?${PHOTO_V}`,
-  carpet_small: `/photos/carpet-small.jpg?${PHOTO_V}`,
-  carpet_medium: `/photos/carpet-medium.jpg?${PHOTO_V}`,
-  carpet_large: `/photos/carpet-large.jpg?${PHOTO_V}`,
+  sofa_2: "/photos/sofa-2.jpg",
+  sofa_3: "/photos/sofa-3.jpg",
+  sofa_corner: "/photos/sofa-corner.jpg",
+  armchair: "/photos/armchair.jpg",
+  chair: "/photos/chair.jpg",
+  mattress_single: "/photos/mattress-single.jpg",
+  mattress_double: "/photos/mattress-double.jpg",
+  mattress_king: "/photos/mattress-king.jpg",
+  carpet_small: "/photos/carpet-small.jpg",
+  carpet_medium: "/photos/carpet-medium.jpg",
+  carpet_large: "/photos/carpet-large.jpg",
 };
 
 type Props = {
@@ -172,7 +170,7 @@ export function Calculator({ onApply }: Props) {
         >
           <span className="service-pick-media">
             <Image
-              src={`/photos/upholstery.jpg?${PHOTO_V}`}
+              src="/photos/upholstery.jpg"
               alt=""
               fill
               sizes="(max-width: 719px) 50vw, 280px"
