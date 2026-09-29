@@ -93,7 +93,7 @@ export function BeforeAfter() {
 
   useEffect(() => {
     const dirty = new window.Image();
-    dirty.src = "/photos/sofa-before-dirty.png?v=2";
+    dirty.src = "/photos/sofa-before-dirty.png?v=3";
     dirtyRef.current = dirty;
 
     const onLoad = () => resize();
@@ -179,7 +179,7 @@ export function BeforeAfter() {
           className="ba-img"
           priority={false}
           draggable={false}
-          key="sofa-after-v2"
+          key="sofa-after-v3"
         />
         <canvas
           ref={canvasRef}

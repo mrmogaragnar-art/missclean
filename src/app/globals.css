@@ -496,10 +496,11 @@ main {
 .ba-tool {
   position: absolute;
   z-index: 6;
-  width: 4.2rem;
+  width: 3.36rem;
   height: auto;
   pointer-events: none;
-  transform: translate(-50%, -6%);
+  /* Tip near contact point; body shifted up+right so finger/mouse doesn't cover it */
+  transform: translate(calc(-50% + 1.35rem), calc(-100% - 0.35rem));
   opacity: 0;
   filter: drop-shadow(0 8px 14px rgba(42, 31, 26, 0.28));
   transition: opacity 0.12s ease;
@@ -1576,7 +1577,8 @@ main {
 
 @media (max-width: 719px) {
   .ba-tool {
-    width: 5rem;
+    width: 4rem;
+    transform: translate(calc(-50% + 1.55rem), calc(-100% - 0.5rem));
   }
 }
 
@@ -1587,7 +1589,8 @@ main {
   }
 
   .ba-tool {
-    width: 5.25rem;
+    width: 4.2rem;
+    transform: translate(calc(-50% + 1.7rem), calc(-100% - 0.6rem));
   }
 }
 
