@@ -6,8 +6,14 @@ import { siteConfig, type DryCleanItemId } from "@/config/site";
 import { useI18n } from "@/i18n/I18nProvider";
 import { calcDryTotal, calcHourlyTotal, type ServiceType } from "@/lib/pricing";
 
-const sofaIds: DryCleanItemId[] = ["sofa_2", "sofa_3", "sofa_corner"];
-const chairIds: DryCleanItemId[] = ["armchair", "chair"];
+const sofaIds: DryCleanItemId[] = [
+  "sofa_2",
+  "sofa_3",
+  "sofa_corner",
+  "sofa_folding",
+  "sofa_u",
+];
+const chairIds: DryCleanItemId[] = ["armchair", "office_chair", "chair"];
 const mattressIds: DryCleanItemId[] = [
   "mattress_single",
   "mattress_double",
@@ -23,7 +29,10 @@ const itemPhotos: Record<DryCleanItemId, string> = {
   sofa_2: "/photos/sofa-2.jpg",
   sofa_3: "/photos/sofa-3.jpg",
   sofa_corner: "/photos/sofa-corner.jpg",
+  sofa_folding: "/photos/sofa-folding.jpg",
+  sofa_u: "/photos/sofa-u.jpg",
   armchair: "/photos/armchair.jpg",
+  office_chair: "/photos/office-chair.jpg",
   chair: "/photos/chair.jpg",
   mattress_single: "/photos/mattress-single.jpg",
   mattress_double: "/photos/mattress-double.jpg",

@@ -1083,7 +1083,7 @@ main {
 }
 
 .item-card-img {
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
 }
 
