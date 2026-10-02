@@ -26,11 +26,7 @@ const mattressIds: DryCleanItemId[] = [
   "mattress_single",
   "mattress_double",
 ];
-const carpetIds: DryCleanItemId[] = [
-  "carpet_small",
-  "carpet_medium",
-  "carpet_large",
-];
+const carpetIds: DryCleanItemId[] = ["carpet"];
 
 const itemPhotos: Record<DryCleanItemId, string> = {
   sofa_2: "/photos/sofa-2.jpg",
@@ -44,9 +40,7 @@ const itemPhotos: Record<DryCleanItemId, string> = {
   pouf: "/photos/pouf.jpg",
   mattress_single: "/photos/mattress-single.jpg",
   mattress_double: "/photos/mattress-double.jpg",
-  carpet_small: "/photos/carpet-small.jpg",
-  carpet_medium: "/photos/carpet-medium.jpg",
-  carpet_large: "/photos/carpet-large.jpg",
+  carpet: "/photos/carpet-medium.jpg",
 };
 
 type Props = {

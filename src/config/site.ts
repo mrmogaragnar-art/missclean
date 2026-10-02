@@ -55,9 +55,7 @@ export const siteConfig = {
       pouf: { from: 10, to: 15 },
       mattress_single: { from: 40, bothSidesExtra: 10 },
       mattress_double: { from: 50, bothSidesExtra: 20 },
-      carpet_small: { from: 30 },
-      carpet_medium: { from: 50 },
-      carpet_large: { from: 80 },
+      carpet: { from: 40 },
     } satisfies Record<string, DryCleanPrice> as Record<
       | "sofa_2"
       | "sofa_3"
@@ -70,9 +68,7 @@ export const siteConfig = {
       | "pouf"
       | "mattress_single"
       | "mattress_double"
-      | "carpet_small"
-      | "carpet_medium"
-      | "carpet_large",
+      | "carpet",
       DryCleanPrice
     >,
   },

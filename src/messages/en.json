@@ -78,9 +78,7 @@
       "pouf": "Pouf",
       "mattress_single": "Single mattress",
       "mattress_double": "Double mattress",
-      "carpet_small": "Small rug",
-      "carpet_medium": "Medium rug",
-      "carpet_large": "Large rug"
+      "carpet": "Rug"
     },
     "useInForm": "Book with this price"
   },

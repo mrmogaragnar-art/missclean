@@ -78,9 +78,7 @@
       "pouf": "Пуф",
       "mattress_single": "Матрац односпальний",
       "mattress_double": "Матрац двоспальний",
-      "carpet_small": "Килим маленький",
-      "carpet_medium": "Килим середній",
-      "carpet_large": "Килим великий"
+      "carpet": "Килим"
     },
     "useInForm": "До запису з цією ціною"
   },

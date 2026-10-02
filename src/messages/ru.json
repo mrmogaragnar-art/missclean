@@ -78,9 +78,7 @@
       "pouf": "Пуф",
       "mattress_single": "Матрас односпальный",
       "mattress_double": "Матрас двуспальный",
-      "carpet_small": "Ковёр маленький",
-      "carpet_medium": "Ковёр средний",
-      "carpet_large": "Ковёр большой"
+      "carpet": "Ковёр"
     },
     "useInForm": "К записи с этой ценой"
   },

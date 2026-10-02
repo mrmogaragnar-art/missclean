@@ -78,9 +78,7 @@
       "pouf": "Puff",
       "mattress_single": "Colchón individual",
       "mattress_double": "Colchón doble",
-      "carpet_small": "Alfombra pequeña",
-      "carpet_medium": "Alfombra mediana",
-      "carpet_large": "Alfombra grande"
+      "carpet": "Alfombra"
     },
     "useInForm": "Ir a reservar con este precio"
   },
