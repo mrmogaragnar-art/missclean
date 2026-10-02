@@ -9,6 +9,7 @@ import {
   calcHourlyTotal,
   formatItemPrice,
   formatMoneyRange,
+  getItemPrice,
   hasBothSidesOption,
   type ServiceType,
 } from "@/lib/pricing";
@@ -179,7 +180,7 @@ export function Calculator({ onApply }: Props) {
                     aria-pressed={twoSides}
                   >
                     {t.calculator.bothSides} (+
-                    {siteConfig.prices.items[id].bothSidesExtra ?? 10} €)
+                    {getItemPrice(id).bothSidesExtra ?? 10} €)
                   </button>
                 ) : null}
               </div>

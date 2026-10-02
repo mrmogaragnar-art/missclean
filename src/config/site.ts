@@ -59,7 +59,24 @@ export const siteConfig = {
       carpet_small: { from: 30 },
       carpet_medium: { from: 50 },
       carpet_large: { from: 80 },
-    } satisfies Record<string, DryCleanPrice>,
+    } satisfies Record<string, DryCleanPrice> as Record<
+      | "sofa_2"
+      | "sofa_3"
+      | "sofa_corner"
+      | "sofa_folding"
+      | "sofa_u"
+      | "armchair"
+      | "office_chair"
+      | "chair"
+      | "pouf"
+      | "mattress_single"
+      | "mattress_double"
+      | "mattress_king"
+      | "carpet_small"
+      | "carpet_medium"
+      | "carpet_large",
+      DryCleanPrice
+    >,
   },
 
   /** Слоты для быстрой записи (локальное время Валенсии / устройства) */
