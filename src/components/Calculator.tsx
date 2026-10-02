@@ -25,7 +25,6 @@ const chairIds: DryCleanItemId[] = ["armchair", "office_chair", "chair", "pouf"]
 const mattressIds: DryCleanItemId[] = [
   "mattress_single",
   "mattress_double",
-  "mattress_king",
 ];
 const carpetIds: DryCleanItemId[] = [
   "carpet_small",
@@ -45,7 +44,6 @@ const itemPhotos: Record<DryCleanItemId, string> = {
   pouf: "/photos/pouf.jpg",
   mattress_single: "/photos/mattress-single.jpg",
   mattress_double: "/photos/mattress-double.jpg",
-  mattress_king: "/photos/mattress-king.jpg",
   carpet_small: "/photos/carpet-small.jpg",
   carpet_medium: "/photos/carpet-medium.jpg",
   carpet_large: "/photos/carpet-large.jpg",

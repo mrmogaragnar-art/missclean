@@ -54,8 +54,7 @@ export const siteConfig = {
       chair: { from: 10, to: 15 },
       pouf: { from: 10, to: 15 },
       mattress_single: { from: 40, bothSidesExtra: 10 },
-      mattress_double: { from: 50, bothSidesExtra: 10 },
-      mattress_king: { from: 65 },
+      mattress_double: { from: 50, bothSidesExtra: 20 },
       carpet_small: { from: 30 },
       carpet_medium: { from: 50 },
       carpet_large: { from: 80 },
@@ -71,7 +70,6 @@ export const siteConfig = {
       | "pouf"
       | "mattress_single"
       | "mattress_double"
-      | "mattress_king"
       | "carpet_small"
       | "carpet_medium"
       | "carpet_large",
