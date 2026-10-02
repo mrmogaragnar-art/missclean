@@ -43,6 +43,7 @@ export const siteConfig = {
       armchair: 28,
       office_chair: 35,
       chair: 15,
+      pouf: 20,
       mattress_single: 35,
       mattress_double: 50,
       mattress_king: 65,

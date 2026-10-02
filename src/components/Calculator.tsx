@@ -13,7 +13,7 @@ const sofaIds: DryCleanItemId[] = [
   "sofa_folding",
   "sofa_u",
 ];
-const chairIds: DryCleanItemId[] = ["armchair", "office_chair", "chair"];
+const chairIds: DryCleanItemId[] = ["armchair", "office_chair", "chair", "pouf"];
 const mattressIds: DryCleanItemId[] = [
   "mattress_single",
   "mattress_double",
@@ -34,6 +34,7 @@ const itemPhotos: Record<DryCleanItemId, string> = {
   armchair: "/photos/armchair.jpg",
   office_chair: "/photos/office-chair.jpg",
   chair: "/photos/chair.jpg",
+  pouf: "/photos/pouf.jpg",
   mattress_single: "/photos/mattress-single.jpg",
   mattress_double: "/photos/mattress-double.jpg",
   mattress_king: "/photos/mattress-king.jpg",
