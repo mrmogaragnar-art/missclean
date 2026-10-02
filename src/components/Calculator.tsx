@@ -67,7 +67,7 @@ export function Calculator({ onApply }: Props) {
   const [hours, setHours] = useState<number>(siteConfig.prices.minHours);
   const [items, setItems] = useState<DryCleanItemId[]>([]);
   const [bothSides, setBothSides] = useState<DryCleanItemId[]>([]);
-  const [carpetSqm, setCarpetSqm] = useState(siteConfig.carpet.defaultSqm);
+  const [carpetSqm, setCarpetSqm] = useState<number>(siteConfig.carpet.defaultSqm);
 
   useEffect(() => {
     function applyHash() {
