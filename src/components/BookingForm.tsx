@@ -5,8 +5,9 @@ import type { DryCleanItemId } from "@/config/site";
 import { siteConfig } from "@/config/site";
 import { useI18n } from "@/i18n/I18nProvider";
 import {
-  calcDryTotal,
+  calcDryRange,
   calcHourlyTotal,
+  formatMoneyRange,
   type ServiceType,
 } from "@/lib/pricing";
 
@@ -16,7 +17,9 @@ export type CalcSnapshot = {
   service: ServiceType;
   hours: number;
   items: DryCleanItemId[];
+  bothSides: DryCleanItemId[];
   total: number;
+  totalLabel: string;
 };
 
 type Props = {
@@ -38,10 +41,12 @@ export function BookingForm({ snapshot }: Props) {
   const [wantDry, setWantDry] = useState(false);
   const [hours, setHours] = useState<number>(siteConfig.prices.minHours);
   const [items, setItems] = useState<DryCleanItemId[]>([]);
+  const [bothSides, setBothSides] = useState<DryCleanItemId[]>([]);
   const [comment, setComment] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
   const [fromCalculator, setFromCalculator] = useState(false);
   const [stepError, setStepError] = useState(false);
+  const [totalLabel, setTotalLabel] = useState("");
 
   useEffect(() => {
     if (!snapshot) return;
@@ -51,7 +56,9 @@ export function BookingForm({ snapshot }: Props) {
     } else {
       setWantDry(true);
       setItems([...snapshot.items]);
+      setBothSides([...(snapshot.bothSides ?? [])]);
     }
+    setTotalLabel(snapshot.totalLabel || "");
     setFromCalculator(true);
     setStep(1);
     setStepError(false);
@@ -61,14 +68,23 @@ export function BookingForm({ snapshot }: Props) {
     return wantHourly ? calcHourlyTotal(hours) : 0;
   }
 
-  function dryPart(): number {
-    if (!wantDry) return 0;
-    if (items.length === 0) return siteConfig.prices.visitFee;
-    return calcDryTotal(items);
+  function dryPart(): { from: number; to: number } {
+    if (!wantDry) return { from: 0, to: 0 };
+    if (items.length === 0) {
+      const fee = siteConfig.prices.visitFee;
+      return { from: fee, to: fee };
+    }
+    return calcDryRange(items, bothSides);
   }
 
-  function displayTotal(): number {
-    return hourlyPart() + dryPart();
+  function displayTotalLabel(): string {
+    if (fromCalculator && totalLabel && !wantHourly) return totalLabel;
+    const hourly = hourlyPart();
+    const dry = dryPart();
+    const from = hourly + dry.from;
+    const to = hourly + dry.to;
+    if (!wantHourly && !wantDry) return "0 €";
+    return formatMoneyRange(from, to);
   }
 
   function detailsText(): string {
@@ -79,9 +95,17 @@ export function BookingForm({ snapshot }: Props) {
       );
     }
     if (wantDry) {
-      const labels = items.map((id) => t.calculator.items[id]).join(", ");
+      const labels = items
+        .map((id) => {
+          const base = t.calculator.items[id];
+          return bothSides.includes(id)
+            ? `${base} (${t.calculator.bothSides})`
+            : base;
+        })
+        .join(", ");
+      const dry = dryPart();
       parts.push(
-        `${t.form.serviceDry}: ${t.calculator.visitFee} ${siteConfig.prices.visitFee} € + ${labels || t.form.dryItemsLater} = ${dryPart()} €`,
+        `${t.form.serviceDry}: ${t.calculator.visitFee} ${siteConfig.prices.visitFee} € + ${labels || t.form.dryItemsLater} = ${formatMoneyRange(dry.from, dry.to)}`,
       );
     }
     return parts.join(" · ") || "—";
@@ -129,7 +153,7 @@ export function BookingForm({ snapshot }: Props) {
     }
     setStatus("sending");
 
-    const submitTotal = displayTotal();
+    const submitTotal = displayTotalLabel().replace(" €", "");
 
     try {
       const res = await fetch("/api/booking", {
@@ -264,7 +288,13 @@ export function BookingForm({ snapshot }: Props) {
             {wantDry && items.length > 0 ? (
               <p className="muted field-full">
                 {t.form.serviceDry}:{" "}
-                {items.map((id) => t.calculator.items[id]).join(", ")}
+                {items
+                  .map((id) =>
+                    bothSides.includes(id)
+                      ? `${t.calculator.items[id]} (${t.calculator.bothSides})`
+                      : t.calculator.items[id],
+                  )
+                  .join(", ")}
               </p>
             ) : null}
 
@@ -299,7 +329,7 @@ export function BookingForm({ snapshot }: Props) {
                 <p>{detailsText()}</p>
                 <p>
                   <strong>
-                    {t.calculator.total}: {displayTotal()} €
+                    {t.calculator.total}: {displayTotalLabel()}
                   </strong>
                 </p>
               </div>
@@ -331,7 +361,7 @@ export function BookingForm({ snapshot }: Props) {
               <p>{detailsText()}</p>
               <p>
                 <strong>
-                  {t.calculator.total}: {displayTotal()} €
+                  {t.calculator.total}: {displayTotalLabel()}
                 </strong>
               </p>
             </div>

@@ -1,10 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type MouseEvent } from "react";
 import { siteConfig, type DryCleanItemId } from "@/config/site";
 import { useI18n } from "@/i18n/I18nProvider";
-import { calcDryTotal, calcHourlyTotal, type ServiceType } from "@/lib/pricing";
+import {
+  calcDryRange,
+  calcHourlyTotal,
+  formatItemPrice,
+  formatMoneyRange,
+  hasBothSidesOption,
+  type ServiceType,
+} from "@/lib/pricing";
 
 const sofaIds: DryCleanItemId[] = [
   "sofa_2",
@@ -48,7 +55,9 @@ type Props = {
     service: ServiceType;
     hours: number;
     items: DryCleanItemId[];
+    bothSides: DryCleanItemId[];
     total: number;
+    totalLabel: string;
   }) => void;
 };
 
@@ -65,6 +74,7 @@ export function Calculator({ onApply }: Props) {
   const [tab, setTab] = useState<ServiceType>("hourly");
   const [hours, setHours] = useState<number>(siteConfig.prices.minHours);
   const [items, setItems] = useState<DryCleanItemId[]>([]);
+  const [bothSides, setBothSides] = useState<DryCleanItemId[]>([]);
 
   useEffect(() => {
     function applyHash() {
@@ -76,13 +86,38 @@ export function Calculator({ onApply }: Props) {
     return () => window.removeEventListener("hashchange", applyHash);
   }, []);
 
-  const total = useMemo(() => {
-    if (tab === "hourly") return calcHourlyTotal(hours);
-    return calcDryTotal(items);
-  }, [tab, hours, items]);
+  const dryRange = useMemo(
+    () => calcDryRange(items, bothSides),
+    [items, bothSides],
+  );
+
+  const hourlyTotal = useMemo(() => calcHourlyTotal(hours), [hours]);
+
+  const totalLabel = useMemo(() => {
+    if (tab === "hourly") return `${hourlyTotal} €`;
+    if (items.length === 0) return `0 €`;
+    return formatMoneyRange(dryRange.from, dryRange.to);
+  }, [tab, hourlyTotal, items.length, dryRange]);
 
   function toggleItem(id: DryCleanItemId) {
-    setItems((prev) =>
+    setItems((prev) => {
+      if (prev.includes(id)) {
+        setBothSides((sides) => sides.filter((x) => x !== id));
+        return prev.filter((x) => x !== id);
+      }
+      return [...prev, id];
+    });
+  }
+
+  function toggleBothSides(e: MouseEvent, id: DryCleanItemId) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!items.includes(id)) {
+      setItems((prev) => [...prev, id]);
+      setBothSides((prev) => (prev.includes(id) ? prev : [...prev, id]));
+      return;
+    }
+    setBothSides((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   }
@@ -100,35 +135,54 @@ export function Calculator({ onApply }: Props) {
         <div className="item-grid">
           {ids.map((id) => {
             const active = items.includes(id);
+            const twoSides = bothSides.includes(id);
+            const canBoth = hasBothSidesOption(id);
             return (
-              <button
+              <div
                 key={id}
-                type="button"
                 className={`item-card ${active ? "is-active" : ""}`}
-                onClick={() => toggleItem(id)}
-                aria-pressed={active}
               >
-                <span className="item-card-media">
-                  <Image
-                    src={itemPhotos[id]}
-                    alt=""
-                    fill
-                    sizes="(max-width: 719px) 45vw, 180px"
-                    className="item-card-img"
-                  />
-                  {active ? (
-                    <span className="item-card-check" aria-hidden>
-                      ✓
+                <button
+                  type="button"
+                  className="item-card-main"
+                  onClick={() => toggleItem(id)}
+                  aria-pressed={active}
+                >
+                  <span className="item-card-media">
+                    <Image
+                      src={itemPhotos[id]}
+                      alt=""
+                      fill
+                      sizes="(max-width: 719px) 45vw, 180px"
+                      className="item-card-img"
+                    />
+                    {active ? (
+                      <span className="item-card-check" aria-hidden>
+                        ✓
+                      </span>
+                    ) : null}
+                  </span>
+                  <span className="item-card-body">
+                    <span className="item-card-name">
+                      {t.calculator.items[id]}
                     </span>
-                  ) : null}
-                </span>
-                <span className="item-card-body">
-                  <span className="item-card-name">{t.calculator.items[id]}</span>
-                  <strong className="item-card-price">
-                    {siteConfig.prices.items[id]} €
-                  </strong>
-                </span>
-              </button>
+                    <strong className="item-card-price">
+                      {formatItemPrice(id, twoSides)}
+                    </strong>
+                  </span>
+                </button>
+                {canBoth ? (
+                  <button
+                    type="button"
+                    className={`item-both-sides ${twoSides ? "is-on" : ""}`}
+                    onClick={(e) => toggleBothSides(e, id)}
+                    aria-pressed={twoSides}
+                  >
+                    {t.calculator.bothSides} (+
+                    {siteConfig.prices.items[id].bothSidesExtra ?? 10} €)
+                  </button>
+                ) : null}
+              </div>
             );
           })}
         </div>
@@ -227,7 +281,7 @@ export function Calculator({ onApply }: Props) {
               <span>
                 {siteConfig.prices.hourly} € × {hours} {t.calculator.hoursUnit}
               </span>
-              <strong>= {total} €</strong>
+              <strong>= {hourlyTotal} €</strong>
             </p>
             <p className="muted calc-hint">{t.calculator.minHoursHint}</p>
           </div>
@@ -248,18 +302,27 @@ export function Calculator({ onApply }: Props) {
 
       <div className="calc-total is-sticky">
         <span>{t.calculator.total}</span>
-        <strong>{total} €</strong>
+        <strong>{totalLabel}</strong>
       </div>
 
       <button
         type="button"
         className="btn btn-primary calc-apply"
         onClick={() => {
+          const total =
+            tab === "hourly" ? hourlyTotal : dryRange.from;
           onApply({
             service: tab,
             hours: tab === "hourly" ? hours : siteConfig.prices.minHours,
             items: tab === "dry" ? [...items] : [],
+            bothSides: tab === "dry" ? [...bothSides] : [],
             total,
+            totalLabel:
+              tab === "hourly"
+                ? `${hourlyTotal} €`
+                : items.length === 0
+                  ? `${siteConfig.prices.visitFee} €`
+                  : formatMoneyRange(dryRange.from, dryRange.to),
           });
           document.getElementById("book")?.scrollIntoView({ behavior: "smooth" });
         }}

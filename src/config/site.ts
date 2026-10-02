@@ -3,6 +3,15 @@
  * Меняйте значения здесь — больше нигде.
  */
 
+export type DryCleanPrice = {
+  /** Нижняя граница / фиксированная цена */
+  from: number;
+  /** Верхняя граница (если цена «от–до») */
+  to?: number;
+  /** Доплата за чистку с двух сторон (матрасы) */
+  bothSidesExtra?: number;
+};
+
 export const siteConfig = {
   brand: "Miss Clean",
   city: "Valencia",
@@ -35,22 +44,22 @@ export const siteConfig = {
     minHours: 2,
     visitFee: 40,
     items: {
-      sofa_2: 45,
-      sofa_3: 60,
-      sofa_corner: 80,
-      sofa_folding: 75,
-      sofa_u: 110,
-      armchair: 28,
-      office_chair: 35,
-      chair: 15,
-      pouf: 20,
-      mattress_single: 35,
-      mattress_double: 50,
-      mattress_king: 65,
-      carpet_small: 30,
-      carpet_medium: 50,
-      carpet_large: 80,
-    } as const,
+      sofa_2: { from: 50 },
+      sofa_3: { from: 60, to: 70 },
+      sofa_corner: { from: 70, to: 90 },
+      sofa_folding: { from: 80, to: 100 },
+      sofa_u: { from: 100, to: 150 },
+      armchair: { from: 25, to: 30 },
+      office_chair: { from: 20 },
+      chair: { from: 10, to: 15 },
+      pouf: { from: 10, to: 15 },
+      mattress_single: { from: 40, bothSidesExtra: 10 },
+      mattress_double: { from: 50, bothSidesExtra: 10 },
+      mattress_king: { from: 65 },
+      carpet_small: { from: 30 },
+      carpet_medium: { from: 50 },
+      carpet_large: { from: 80 },
+    } satisfies Record<string, DryCleanPrice>,
   },
 
   /** Слоты для быстрой записи (локальное время Валенсии / устройства) */
