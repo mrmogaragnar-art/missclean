@@ -702,12 +702,14 @@ main {
 
 .service-pick-media {
   position: relative;
-  min-height: 110px;
+  aspect-ratio: 1 / 1;
+  min-height: 0;
   background: var(--cream-deep);
 }
 
 .service-pick-img {
   object-fit: cover;
+  object-position: center;
 }
 
 .service-pick-body {
@@ -1074,7 +1076,7 @@ main {
 .item-card-media {
   position: relative;
   display: block;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1 / 1;
   border-radius: 0.8rem;
   overflow: hidden;
   background: var(--cream-deep);
@@ -1082,6 +1084,7 @@ main {
 
 .item-card-img {
   object-fit: cover;
+  object-position: center;
 }
 
 .item-card-check {
@@ -1572,7 +1575,9 @@ main {
   }
 
   .service-pick-media {
-    min-height: 120px;
+    aspect-ratio: 1 / 1;
+    width: min(100%, 280px);
+    margin: 0 auto;
   }
 
   .book-step2-actions {
