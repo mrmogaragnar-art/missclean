@@ -74,7 +74,7 @@ export const siteConfig = {
   /** Ползунок размера ковра (м²). Цена — при консультации. */
   carpet: {
     minSqm: 0,
-    maxSqm: 25,
+    maxSqm: 6,
     step: 1,
     defaultSqm: 0,
   },

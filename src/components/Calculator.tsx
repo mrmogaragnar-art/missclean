@@ -102,6 +102,11 @@ export function Calculator({ onApply }: Props) {
     return dryTotalLabel;
   }, [tab, hourlyTotal, dryTotalLabel]);
 
+  const carpetScale =
+    carpetSqm <= 0
+      ? 0.36
+      : 0.42 + 0.58 * (carpetSqm / siteConfig.carpet.maxSqm);
+
   function toggleItem(id: DryCleanItemId) {
     setItems((prev) => {
       if (prev.includes(id)) {
@@ -303,14 +308,19 @@ export function Calculator({ onApply }: Props) {
           <div className={`item-group carpet-group ${carpetSqm > 0 ? "is-active" : ""}`}>
             <h4>{t.calculator.groups.carpets}</h4>
             <div className="carpet-card">
-              <div className="carpet-media">
-                <Image
-                  src="/photos/carpet-medium.jpg"
-                  alt=""
-                  fill
-                  sizes="(max-width: 719px) 100vw, 320px"
-                  className="carpet-img"
-                />
+              <div className="carpet-media" aria-hidden>
+                <div
+                  className={`carpet-visual ${carpetSqm > 0 ? "is-on" : ""}`}
+                  style={{ transform: `scale(${carpetScale})` }}
+                >
+                  <Image
+                    src="/photos/carpet-medium.jpg"
+                    alt=""
+                    fill
+                    sizes="(max-width: 719px) 100vw, 320px"
+                    className="carpet-img"
+                  />
+                </div>
               </div>
               <div className="carpet-controls">
                 <div className="carpet-size-row">
