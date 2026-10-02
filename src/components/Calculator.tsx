@@ -26,7 +26,6 @@ const mattressIds: DryCleanItemId[] = [
   "mattress_single",
   "mattress_double",
 ];
-const carpetIds: DryCleanItemId[] = ["carpet"];
 
 const itemPhotos: Record<DryCleanItemId, string> = {
   sofa_2: "/photos/sofa-2.jpg",
@@ -40,7 +39,6 @@ const itemPhotos: Record<DryCleanItemId, string> = {
   pouf: "/photos/pouf.jpg",
   mattress_single: "/photos/mattress-single.jpg",
   mattress_double: "/photos/mattress-double.jpg",
-  carpet: "/photos/carpet-medium.jpg",
 };
 
 type Props = {
@@ -49,6 +47,7 @@ type Props = {
     hours: number;
     items: DryCleanItemId[];
     bothSides: DryCleanItemId[];
+    carpetSqm: number;
     total: number;
     totalLabel: string;
   }) => void;
@@ -68,6 +67,7 @@ export function Calculator({ onApply }: Props) {
   const [hours, setHours] = useState<number>(siteConfig.prices.minHours);
   const [items, setItems] = useState<DryCleanItemId[]>([]);
   const [bothSides, setBothSides] = useState<DryCleanItemId[]>([]);
+  const [carpetSqm, setCarpetSqm] = useState(siteConfig.carpet.defaultSqm);
 
   useEffect(() => {
     function applyHash() {
@@ -80,17 +80,27 @@ export function Calculator({ onApply }: Props) {
   }, []);
 
   const dryRange = useMemo(
-    () => calcDryRange(items, bothSides),
-    [items, bothSides],
+    () => calcDryRange(items, bothSides, { carpetSqm }),
+    [items, bothSides, carpetSqm],
   );
 
   const hourlyTotal = useMemo(() => calcHourlyTotal(hours), [hours]);
 
+  const dryTotalLabel = useMemo(() => {
+    const hasItems = items.length > 0;
+    const hasCarpet = carpetSqm > 0;
+    if (!hasItems && !hasCarpet) return "0 €";
+    const money = hasItems
+      ? formatMoneyRange(dryRange.from, dryRange.to)
+      : `${siteConfig.prices.visitFee} €`;
+    if (!hasCarpet) return money;
+    return `${money} + ${t.calculator.carpetPriceNote}`;
+  }, [items.length, carpetSqm, dryRange, t.calculator.carpetPriceNote]);
+
   const totalLabel = useMemo(() => {
     if (tab === "hourly") return `${hourlyTotal} €`;
-    if (items.length === 0) return `0 €`;
-    return formatMoneyRange(dryRange.from, dryRange.to);
-  }, [tab, hourlyTotal, items.length, dryRange]);
+    return dryTotalLabel;
+  }, [tab, hourlyTotal, dryTotalLabel]);
 
   function toggleItem(id: DryCleanItemId) {
     setItems((prev) => {
@@ -289,7 +299,48 @@ export function Calculator({ onApply }: Props) {
           {renderGroup(t.calculator.groups.sofas, sofaIds)}
           {renderGroup(t.calculator.groups.chairs, chairIds)}
           {renderGroup(t.calculator.groups.mattresses, mattressIds)}
-          {renderGroup(t.calculator.groups.carpets, carpetIds)}
+
+          <div className={`item-group carpet-group ${carpetSqm > 0 ? "is-active" : ""}`}>
+            <h4>{t.calculator.groups.carpets}</h4>
+            <div className="carpet-card">
+              <div className="carpet-media">
+                <Image
+                  src="/photos/carpet-medium.jpg"
+                  alt=""
+                  fill
+                  sizes="(max-width: 719px) 100vw, 320px"
+                  className="carpet-img"
+                />
+              </div>
+              <div className="carpet-controls">
+                <div className="carpet-size-row">
+                  <span className="field-label">{t.calculator.carpetSize}</span>
+                  <strong className="carpet-size-value" aria-live="polite">
+                    {carpetSqm > 0
+                      ? `${carpetSqm} ${t.calculator.carpetUnit}`
+                      : t.calculator.carpetOff}
+                  </strong>
+                </div>
+                <input
+                  type="range"
+                  className="carpet-slider"
+                  min={siteConfig.carpet.minSqm}
+                  max={siteConfig.carpet.maxSqm}
+                  step={siteConfig.carpet.step}
+                  value={carpetSqm}
+                  onChange={(e) => setCarpetSqm(Number(e.target.value))}
+                  aria-label={t.calculator.carpetSize}
+                />
+                <div className="carpet-slider-ends">
+                  <span>{siteConfig.carpet.minSqm}</span>
+                  <span>
+                    {siteConfig.carpet.maxSqm} {t.calculator.carpetUnit}
+                  </span>
+                </div>
+                <p className="carpet-price-note">{t.calculator.carpetPriceNote}</p>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -309,13 +360,10 @@ export function Calculator({ onApply }: Props) {
             hours: tab === "hourly" ? hours : siteConfig.prices.minHours,
             items: tab === "dry" ? [...items] : [],
             bothSides: tab === "dry" ? [...bothSides] : [],
+            carpetSqm: tab === "dry" ? carpetSqm : 0,
             total,
             totalLabel:
-              tab === "hourly"
-                ? `${hourlyTotal} €`
-                : items.length === 0
-                  ? `${siteConfig.prices.visitFee} €`
-                  : formatMoneyRange(dryRange.from, dryRange.to),
+              tab === "hourly" ? `${hourlyTotal} €` : dryTotalLabel,
           });
           document.getElementById("book")?.scrollIntoView({ behavior: "smooth" });
         }}

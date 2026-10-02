@@ -59,8 +59,14 @@ function itemSum(
 export function calcDryRange(
   itemIds: DryCleanItemId[],
   bothSides: DryCleanItemId[] = [],
+  options?: { carpetSqm?: number },
 ): { from: number; to: number } {
-  if (itemIds.length === 0) return { from: 0, to: 0 };
+  const carpetSqm = options?.carpetSqm ?? 0;
+  if (itemIds.length === 0 && carpetSqm <= 0) return { from: 0, to: 0 };
+  if (itemIds.length === 0 && carpetSqm > 0) {
+    const fee = siteConfig.prices.visitFee;
+    return { from: fee, to: fee };
+  }
   const from =
     siteConfig.prices.visitFee + itemSum(itemIds, bothSides, "from");
   const to = siteConfig.prices.visitFee + itemSum(itemIds, bothSides, "to");

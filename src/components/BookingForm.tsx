@@ -18,6 +18,7 @@ export type CalcSnapshot = {
   hours: number;
   items: DryCleanItemId[];
   bothSides: DryCleanItemId[];
+  carpetSqm: number;
   total: number;
   totalLabel: string;
 };
@@ -42,6 +43,7 @@ export function BookingForm({ snapshot }: Props) {
   const [hours, setHours] = useState<number>(siteConfig.prices.minHours);
   const [items, setItems] = useState<DryCleanItemId[]>([]);
   const [bothSides, setBothSides] = useState<DryCleanItemId[]>([]);
+  const [carpetSqm, setCarpetSqm] = useState(0);
   const [comment, setComment] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
   const [fromCalculator, setFromCalculator] = useState(false);
@@ -53,10 +55,12 @@ export function BookingForm({ snapshot }: Props) {
     if (snapshot.service === "hourly") {
       setWantHourly(true);
       setHours(snapshot.hours);
+      setCarpetSqm(0);
     } else {
       setWantDry(true);
       setItems([...snapshot.items]);
       setBothSides([...(snapshot.bothSides ?? [])]);
+      setCarpetSqm(snapshot.carpetSqm ?? 0);
     }
     setTotalLabel(snapshot.totalLabel || "");
     setFromCalculator(true);
@@ -70,11 +74,16 @@ export function BookingForm({ snapshot }: Props) {
 
   function dryPart(): { from: number; to: number } {
     if (!wantDry) return { from: 0, to: 0 };
-    if (items.length === 0) {
+    if (items.length === 0 && carpetSqm <= 0) {
       const fee = siteConfig.prices.visitFee;
       return { from: fee, to: fee };
     }
-    return calcDryRange(items, bothSides);
+    return calcDryRange(items, bothSides, { carpetSqm });
+  }
+
+  function carpetLabel(): string | null {
+    if (carpetSqm <= 0) return null;
+    return `${t.calculator.groups.carpets}: ${carpetSqm} ${t.calculator.carpetUnit} (${t.calculator.carpetPriceNote})`;
   }
 
   function displayTotalLabel(): string {
@@ -84,7 +93,16 @@ export function BookingForm({ snapshot }: Props) {
     const from = hourly + dry.from;
     const to = hourly + dry.to;
     if (!wantHourly && !wantDry) return "0 €";
-    return formatMoneyRange(from, to);
+    const money =
+      wantDry && items.length === 0 && carpetSqm > 0
+        ? `${siteConfig.prices.visitFee} €`
+        : !wantDry && wantHourly
+          ? `${hourly} €`
+          : formatMoneyRange(from, to);
+    if (wantDry && carpetSqm > 0) {
+      return `${money} + ${t.calculator.carpetPriceNote}`;
+    }
+    return money;
   }
 
   function detailsText(): string {
@@ -102,10 +120,16 @@ export function BookingForm({ snapshot }: Props) {
             ? `${base} (${t.calculator.bothSides})`
             : base;
         })
-        .join(", ");
+        .filter(Boolean);
+      const carpet = carpetLabel();
+      if (carpet) labels.push(carpet);
       const dry = dryPart();
+      const money =
+        items.length === 0 && carpetSqm > 0
+          ? `${siteConfig.prices.visitFee} €`
+          : formatMoneyRange(dry.from, dry.to);
       parts.push(
-        `${t.form.serviceDry}: ${t.calculator.visitFee} ${siteConfig.prices.visitFee} € + ${labels || t.form.dryItemsLater} = ${formatMoneyRange(dry.from, dry.to)}`,
+        `${t.form.serviceDry}: ${t.calculator.visitFee} ${siteConfig.prices.visitFee} € + ${labels.join(", ") || t.form.dryItemsLater} = ${money}${carpetSqm > 0 ? ` + ${t.calculator.carpetPriceNote}` : ""}`,
       );
     }
     return parts.join(" · ") || "—";
@@ -281,19 +305,24 @@ export function BookingForm({ snapshot }: Props) {
               </div>
             ) : null}
 
-            {wantDry && items.length === 0 ? (
+            {wantDry && items.length === 0 && carpetSqm <= 0 ? (
               <p className="muted field-full book-dry-hint">{t.form.dryHintCalc}</p>
             ) : null}
 
-            {wantDry && items.length > 0 ? (
+            {wantDry && (items.length > 0 || carpetSqm > 0) ? (
               <p className="muted field-full">
                 {t.form.serviceDry}:{" "}
-                {items
-                  .map((id) =>
+                {[
+                  ...items.map((id) =>
                     bothSides.includes(id)
                       ? `${t.calculator.items[id]} (${t.calculator.bothSides})`
                       : t.calculator.items[id],
-                  )
+                  ),
+                  carpetSqm > 0
+                    ? `${t.calculator.groups.carpets} ${carpetSqm} ${t.calculator.carpetUnit} (${t.calculator.carpetPriceNote})`
+                    : null,
+                ]
+                  .filter(Boolean)
                   .join(", ")}
               </p>
             ) : null}

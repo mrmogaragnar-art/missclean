@@ -60,6 +60,10 @@
     "visitFee": "Виїзд від",
     "selectItems": "Що потрібно почистити",
     "bothSides": "З двох сторін",
+    "carpetSize": "Розмір килима",
+    "carpetUnit": "м²",
+    "carpetOff": "Не обрано",
+    "carpetPriceNote": "Ціна під час консультації",
     "groups": {
       "sofas": "Дивани",
       "chairs": "Крісла і стільці",
@@ -77,8 +81,7 @@
       "chair": "Стілець",
       "pouf": "Пуф",
       "mattress_single": "Матрац односпальний",
-      "mattress_double": "Матрац двоспальний",
-      "carpet": "Килим"
+      "mattress_double": "Матрац двоспальний"
     },
     "useInForm": "До запису з цією ціною"
   },

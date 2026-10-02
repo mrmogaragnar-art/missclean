@@ -55,7 +55,6 @@ export const siteConfig = {
       pouf: { from: 10, to: 15 },
       mattress_single: { from: 40, bothSidesExtra: 10 },
       mattress_double: { from: 50, bothSidesExtra: 20 },
-      carpet: { from: 40 },
     } satisfies Record<string, DryCleanPrice> as Record<
       | "sofa_2"
       | "sofa_3"
@@ -67,10 +66,17 @@ export const siteConfig = {
       | "chair"
       | "pouf"
       | "mattress_single"
-      | "mattress_double"
-      | "carpet",
+      | "mattress_double",
       DryCleanPrice
     >,
+  },
+
+  /** Ползунок размера ковра (м²). Цена — при консультации. */
+  carpet: {
+    minSqm: 0,
+    maxSqm: 25,
+    step: 1,
+    defaultSqm: 0,
   },
 
   /** Слоты для быстрой записи (локальное время Валенсии / устройства) */

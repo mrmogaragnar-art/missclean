@@ -60,6 +60,10 @@
     "visitFee": "Visit fee from",
     "selectItems": "Select what needs cleaning",
     "bothSides": "Both sides",
+    "carpetSize": "Carpet size",
+    "carpetUnit": "m²",
+    "carpetOff": "Not included",
+    "carpetPriceNote": "Price on consultation",
     "groups": {
       "sofas": "Sofas",
       "chairs": "Armchairs and chairs",
@@ -77,8 +81,7 @@
       "chair": "Chair",
       "pouf": "Pouf",
       "mattress_single": "Single mattress",
-      "mattress_double": "Double mattress",
-      "carpet": "Rug"
+      "mattress_double": "Double mattress"
     },
     "useInForm": "Book with this price"
   },

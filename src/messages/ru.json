@@ -60,6 +60,10 @@
     "visitFee": "Выезд от",
     "selectItems": "Что нужно почистить",
     "bothSides": "С двух сторон",
+    "carpetSize": "Размер ковра",
+    "carpetUnit": "м²",
+    "carpetOff": "Не выбран",
+    "carpetPriceNote": "Цена при консультации",
     "groups": {
       "sofas": "Диваны",
       "chairs": "Кресла и стулья",
@@ -77,8 +81,7 @@
       "chair": "Стул",
       "pouf": "Пуф",
       "mattress_single": "Матрас односпальный",
-      "mattress_double": "Матрас двуспальный",
-      "carpet": "Ковёр"
+      "mattress_double": "Матрас двуспальный"
     },
     "useInForm": "К записи с этой ценой"
   },

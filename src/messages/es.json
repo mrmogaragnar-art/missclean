@@ -60,6 +60,10 @@
     "visitFee": "Salida desde",
     "selectItems": "Elige lo que hay que limpiar",
     "bothSides": "Por ambos lados",
+    "carpetSize": "Tamaño de la alfombra",
+    "carpetUnit": "m²",
+    "carpetOff": "No incluido",
+    "carpetPriceNote": "Precio en consulta",
     "groups": {
       "sofas": "Sofás",
       "chairs": "Sillones y sillas",
@@ -77,8 +81,7 @@
       "chair": "Silla",
       "pouf": "Puff",
       "mattress_single": "Colchón individual",
-      "mattress_double": "Colchón doble",
-      "carpet": "Alfombra"
+      "mattress_double": "Colchón doble"
     },
     "useInForm": "Ir a reservar con este precio"
   },
