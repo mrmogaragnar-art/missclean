@@ -10,5 +10,6 @@
 | Репозиторий | GitHub |
 | Уведомления | Telegram Bot API |
 | i18n | Свои JSON-словари (es, en, ru, uk) |
+| AI / LLM discovery | llms.txt, llms-full.txt, JSON-LD (schema.org), sitemap/robots |
 
 Секреты только в env Vercel: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`.

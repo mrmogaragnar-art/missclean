@@ -7,6 +7,7 @@ import { useI18n } from "@/i18n/I18nProvider";
 import {
   calcDryRange,
   calcHourlyTotal,
+  dryNeedsMinimumTopUp,
   formatItemPrice,
   formatMoneyRange,
   getItemPrice,
@@ -41,16 +42,19 @@ const itemPhotos: Record<DryCleanItemId, string> = {
   mattress_double: "/photos/mattress-double.jpg",
 };
 
+export type CalcApplyPayload = {
+  wantHourly: boolean;
+  wantDry: boolean;
+  hours: number;
+  items: DryCleanItemId[];
+  bothSides: DryCleanItemId[];
+  carpetSqm: number;
+  total: number;
+  totalLabel: string;
+};
+
 type Props = {
-  onApply: (payload: {
-    service: ServiceType;
-    hours: number;
-    items: DryCleanItemId[];
-    bothSides: DryCleanItemId[];
-    carpetSqm: number;
-    total: number;
-    totalLabel: string;
-  }) => void;
+  onApply: (payload: CalcApplyPayload) => void;
 };
 
 function readServiceFromHash(): ServiceType | null {
@@ -63,7 +67,9 @@ function readServiceFromHash(): ServiceType | null {
 
 export function Calculator({ onApply }: Props) {
   const { t } = useI18n();
-  const [tab, setTab] = useState<ServiceType>("hourly");
+  const [wantHourly, setWantHourly] = useState(false);
+  const [wantDry, setWantDry] = useState(false);
+  const [focus, setFocus] = useState<ServiceType | null>(null);
   const [hours, setHours] = useState<number>(siteConfig.prices.minHours);
   const [items, setItems] = useState<DryCleanItemId[]>([]);
   const [bothSides, setBothSides] = useState<DryCleanItemId[]>([]);
@@ -72,7 +78,14 @@ export function Calculator({ onApply }: Props) {
   useEffect(() => {
     function applyHash() {
       const next = readServiceFromHash();
-      if (next) setTab(next);
+      if (!next) return;
+      if (next === "hourly") {
+        setWantHourly(true);
+        setFocus("hourly");
+      } else {
+        setWantDry(true);
+        setFocus("dry");
+      }
     }
     applyHash();
     window.addEventListener("hashchange", applyHash);
@@ -86,26 +99,81 @@ export function Calculator({ onApply }: Props) {
 
   const hourlyTotal = useMemo(() => calcHourlyTotal(hours), [hours]);
 
+  const needsMinTopUp = useMemo(
+    () => dryNeedsMinimumTopUp(items, bothSides, carpetSqm),
+    [items, bothSides, carpetSqm],
+  );
+
+  const dryReady = wantDry && (items.length > 0 || carpetSqm > 0);
+  const hourlyReady = wantHourly;
+  const canApply = hourlyReady || dryReady;
+
   const dryTotalLabel = useMemo(() => {
+    if (!dryReady) return "0 €";
     const hasItems = items.length > 0;
-    const hasCarpet = carpetSqm > 0;
-    if (!hasItems && !hasCarpet) return "0 €";
     const money = hasItems
       ? formatMoneyRange(dryRange.from, dryRange.to)
       : `${siteConfig.prices.visitFee} €`;
-    if (!hasCarpet) return money;
+    if (carpetSqm <= 0) return money;
     return `${money} + ${t.calculator.carpetPriceNote}`;
-  }, [items.length, carpetSqm, dryRange, t.calculator.carpetPriceNote]);
+  }, [
+    dryReady,
+    items.length,
+    carpetSqm,
+    dryRange,
+    t.calculator.carpetPriceNote,
+  ]);
 
   const totalLabel = useMemo(() => {
-    if (tab === "hourly") return `${hourlyTotal} €`;
-    return dryTotalLabel;
-  }, [tab, hourlyTotal, dryTotalLabel]);
+    const parts: string[] = [];
+    if (hourlyReady) parts.push(`${hourlyTotal} €`);
+    if (dryReady) parts.push(dryTotalLabel);
+    if (parts.length === 0) return "0 €";
+    if (parts.length === 1) return parts[0];
+    if (dryReady && carpetSqm > 0) {
+      return `${formatMoneyRange(
+        hourlyTotal + dryRange.from,
+        hourlyTotal + dryRange.to,
+      )} + ${t.calculator.carpetPriceNote}`;
+    }
+    return formatMoneyRange(
+      hourlyTotal + dryRange.from,
+      hourlyTotal + dryRange.to,
+    );
+  }, [
+    hourlyReady,
+    dryReady,
+    hourlyTotal,
+    dryTotalLabel,
+    carpetSqm,
+    dryRange,
+    t.calculator.carpetPriceNote,
+  ]);
 
   const carpetScale =
     carpetSqm <= 0
       ? 0.36
       : 0.42 + 0.58 * (carpetSqm / siteConfig.carpet.maxSqm);
+
+  function toggleHourly() {
+    setWantHourly((v) => {
+      const next = !v;
+      if (next) setFocus("hourly");
+      else if (wantDry) setFocus("dry");
+      else setFocus(null);
+      return next;
+    });
+  }
+
+  function toggleDry() {
+    setWantDry((v) => {
+      const next = !v;
+      if (next) setFocus("dry");
+      else if (wantHourly) setFocus("hourly");
+      else setFocus(null);
+      return next;
+    });
+  }
 
   function toggleItem(id: DryCleanItemId) {
     setItems((prev) => {
@@ -198,6 +266,12 @@ export function Calculator({ onApply }: Props) {
     );
   }
 
+  const activeFocus: ServiceType | null =
+    focus ?? (wantHourly ? "hourly" : wantDry ? "dry" : null);
+  const showHourlyPanel =
+    wantHourly && (!wantDry || activeFocus === "hourly");
+  const showDryPanel = wantDry && (!wantHourly || activeFocus === "dry");
+
   return (
     <section className="section calculator" id="calculator">
       <div className="section-head">
@@ -206,13 +280,13 @@ export function Calculator({ onApply }: Props) {
       </div>
 
       <p className="service-pick-label">{t.calculator.pickService}</p>
-      <div className="service-pick" role="tablist" aria-label={t.calculator.pickService}>
+      <div className="service-pick" role="group" aria-label={t.calculator.pickService}>
         <button
           type="button"
-          role="tab"
-          aria-selected={tab === "hourly"}
-          className={`service-pick-card ${tab === "hourly" ? "is-active" : ""}`}
-          onClick={() => setTab("hourly")}
+          id="calculator-hourly"
+          aria-pressed={wantHourly}
+          className={`service-pick-card ${wantHourly ? "is-active" : ""}`}
+          onClick={toggleHourly}
         >
           <span className="service-pick-media">
             <Image
@@ -224,7 +298,10 @@ export function Calculator({ onApply }: Props) {
             />
           </span>
           <span className="service-pick-body">
-            <span className="service-pick-title">{t.calculator.hourlyTab}</span>
+            <span className="service-pick-title">
+              {wantHourly ? "✓ " : ""}
+              {t.calculator.hourlyTab}
+            </span>
             <span className="service-pick-desc">{t.calculator.hourlyHint}</span>
             <span className="service-pick-price">
               {siteConfig.prices.hourly} € / {t.calculator.hoursUnit}
@@ -234,11 +311,10 @@ export function Calculator({ onApply }: Props) {
 
         <button
           type="button"
-          role="tab"
           id="calculator-dry"
-          aria-selected={tab === "dry"}
-          className={`service-pick-card ${tab === "dry" ? "is-active" : ""}`}
-          onClick={() => setTab("dry")}
+          aria-pressed={wantDry}
+          className={`service-pick-card ${wantDry ? "is-active" : ""}`}
+          onClick={toggleDry}
         >
           <span className="service-pick-media">
             <Image
@@ -250,7 +326,10 @@ export function Calculator({ onApply }: Props) {
             />
           </span>
           <span className="service-pick-body">
-            <span className="service-pick-title">{t.calculator.dryTab}</span>
+            <span className="service-pick-title">
+              {wantDry ? "✓ " : ""}
+              {t.calculator.dryTab}
+            </span>
             <span className="service-pick-desc">{t.calculator.dryHint}</span>
             <span className="service-pick-price">
               {t.calculator.visitFee} {siteConfig.prices.visitFee} €
@@ -259,7 +338,30 @@ export function Calculator({ onApply }: Props) {
         </button>
       </div>
 
-      {tab === "hourly" ? (
+      {wantHourly && wantDry ? (
+        <div className="calc-focus-tabs" role="tablist">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeFocus === "hourly"}
+            className={`calc-focus-tab ${activeFocus === "hourly" ? "is-active" : ""}`}
+            onClick={() => setFocus("hourly")}
+          >
+            {t.calculator.hourlyTab}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeFocus === "dry"}
+            className={`calc-focus-tab ${activeFocus === "dry" ? "is-active" : ""}`}
+            onClick={() => setFocus("dry")}
+          >
+            {t.calculator.dryTab}
+          </button>
+        </div>
+      ) : null}
+
+      {showHourlyPanel ? (
         <div className="calc-panel calc-panel-hourly">
           <div className="calc-hourly-controls">
             <p className="field-label">{t.calculator.hours}</p>
@@ -294,12 +396,15 @@ export function Calculator({ onApply }: Props) {
             <p className="muted calc-hint">{t.calculator.minHoursHint}</p>
           </div>
         </div>
-      ) : (
+      ) : null}
+
+      {showDryPanel ? (
         <div className="calc-panel calc-panel-dry">
           <div className="visit-fee-badge">
             <span>{t.calculator.visitFee}</span>
             <strong>{siteConfig.prices.visitFee} €</strong>
           </div>
+          <p className="muted select-hint">{t.calculator.visitFeeHint}</p>
           <p className="muted select-hint">{t.calculator.selectItems}</p>
           {renderGroup(t.calculator.groups.sofas, sofaIds)}
           {renderGroup(t.calculator.groups.chairs, chairIds)}
@@ -351,8 +456,16 @@ export function Calculator({ onApply }: Props) {
               </div>
             </div>
           </div>
+
+          {needsMinTopUp && dryReady ? (
+            <p className="calc-min-note">{t.calculator.visitFeeApplied}</p>
+          ) : null}
         </div>
-      )}
+      ) : null}
+
+      {!wantHourly && !wantDry ? (
+        <p className="muted calc-empty-hint">{t.calculator.pickBothHint}</p>
+      ) : null}
 
       <div className="calc-total is-sticky">
         <span>{t.calculator.total}</span>
@@ -362,18 +475,19 @@ export function Calculator({ onApply }: Props) {
       <button
         type="button"
         className="btn btn-primary calc-apply"
+        disabled={!canApply}
         onClick={() => {
-          const total =
-            tab === "hourly" ? hourlyTotal : dryRange.from;
+          if (!canApply) return;
+          const dryFrom = dryReady ? dryRange.from : 0;
           onApply({
-            service: tab,
-            hours: tab === "hourly" ? hours : siteConfig.prices.minHours,
-            items: tab === "dry" ? [...items] : [],
-            bothSides: tab === "dry" ? [...bothSides] : [],
-            carpetSqm: tab === "dry" ? carpetSqm : 0,
-            total,
-            totalLabel:
-              tab === "hourly" ? `${hourlyTotal} €` : dryTotalLabel,
+            wantHourly,
+            wantDry: dryReady,
+            hours: wantHourly ? hours : siteConfig.prices.minHours,
+            items: dryReady ? [...items] : [],
+            bothSides: dryReady ? [...bothSides] : [],
+            carpetSqm: dryReady ? carpetSqm : 0,
+            total: (wantHourly ? hourlyTotal : 0) + dryFrom,
+            totalLabel,
           });
           document.getElementById("book")?.scrollIntoView({ behavior: "smooth" });
         }}

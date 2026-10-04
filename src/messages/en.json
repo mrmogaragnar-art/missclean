@@ -5,6 +5,7 @@
     "calculator": "Calculator",
     "book": "Book",
     "works": "Work",
+    "faq": "FAQ",
     "contact": "Contact"
   },
   "hero": {
@@ -25,7 +26,7 @@
     "hourlyDesc": "€18/hour, minimum 2 hours. We keep your home clean on a regular rhythm: kitchen, bathroom, dust and floors — to your list.",
     "hourlyCta": "Price hourly cleaning",
     "dryTitle": "Upholstery cleaning",
-    "dryDesc": "Visit fee from €40 + price by sofa, armchair, chair, mattress or rug. We clean on-site, on demand.",
+    "dryDesc": "Minimum order €40. If items cost more, you pay only for them (visit included). We clean on-site.",
     "dryCta": "Price upholstery",
     "safeTitle": "Safe chemistry",
     "safeDesc": "We use home-friendly products: no harsh smell, with careful formulas for fabrics and surfaces.",
@@ -45,8 +46,9 @@
   },
   "calculator": {
     "title": "Estimate your price",
-    "sub": "First pick a service — hourly cleaning and upholstery are priced differently.",
-    "pickService": "What do you need?",
+    "sub": "Build your order — hourly, upholstery, or both — then book.",
+    "pickService": "What do you need? You can pick both.",
+    "pickBothHint": "Select hourly and/or upholstery above to see the price.",
     "hourlyTab": "Hourly cleaning",
     "dryTab": "Upholstery cleaning",
     "hourlyHint": "Regular home care: kitchen, dust, floors.",
@@ -57,7 +59,9 @@
     "increaseHours": "More hours",
     "minHoursHint": "Minimum 2 hours",
     "total": "Estimated total",
-    "visitFee": "Visit fee from",
+    "visitFee": "Minimum order",
+    "visitFeeHint": "If items total under €40, the order is still €40. If more — you pay only for the items.",
+    "visitFeeApplied": "€40 minimum order applied",
     "selectItems": "Select what needs cleaning",
     "bothSides": "Both sides",
     "carpetSize": "Carpet size",
@@ -87,17 +91,20 @@
   },
   "form": {
     "title": "Book in 2 steps",
-    "sub": "Step 1 — service and time. Step 2 — your details.",
+    "sub": "Step 1 — your order and time. Step 2 — address and contacts.",
     "step1Title": "Step 1. Service and time",
     "step1Hint": "You can choose one or both: hourly cleaning and upholstery.",
-    "step1Error": "Pick at least one service, date and time",
-    "continue": "Next — your details",
+    "yourOrder": "Your order from the calculator",
+    "changeServices": "Change services",
+    "step1Error": "Pick at least one service, day and time",
+    "continue": "Next — address and contacts",
     "back": "Back",
     "pickDay": "Day",
     "pickSlot": "Time",
     "name": "Name",
     "phone": "Phone",
     "address": "Area / address",
+    "addressPlaceholder": "Area or street in Valencia",
     "date": "Preferred date",
     "time": "Preferred time",
     "service": "Services",
@@ -120,6 +127,28 @@
     "galleryAlt": "Miss Clean cleaning work",
     "openProfile": "Open Instagram",
     "watch": "Watch video"
+  },
+  "faq": {
+    "title": "FAQ",
+    "sub": "Hourly cleaning and upholstery in Valencia — clear answers.",
+    "items": [
+      {
+        "q": "How much is hourly cleaning in Valencia?",
+        "a": "€18/hour, minimum 2 hours. Estimate the total in the calculator and book online."
+      },
+      {
+        "q": "How much is sofa / upholstery cleaning in Valencia?",
+        "a": "Minimum order €40. If items cost more (e.g. a €50 sofa), you pay only that price. We clean on-site."
+      },
+      {
+        "q": "Do you offer upholstery / dry cleaning of furniture in Valencia?",
+        "a": "Yes: sofas, armchairs, chairs, mattresses and rugs. Book on the site or WhatsApp +34 651 156 133."
+      },
+      {
+        "q": "How do I book a cleaning in Valencia?",
+        "a": "Build your order in the calculator, pick day and time, leave address and phone — or message WhatsApp. Last order of the day: before 20:00."
+      }
+    ]
   },
   "contact": {
     "title": "Contact",

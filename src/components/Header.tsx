@@ -72,6 +72,9 @@ export function Header() {
         <a href="#services" onClick={closeMenu}>
           {t.nav.services}
         </a>
+        <a href="#faq" onClick={closeMenu}>
+          {t.nav.faq}
+        </a>
         <a href="#contact" onClick={closeMenu}>
           {t.nav.contact}
         </a>

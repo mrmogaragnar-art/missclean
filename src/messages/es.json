@@ -5,6 +5,7 @@
     "calculator": "Calculadora",
     "book": "Reservar",
     "works": "Trabajos",
+    "faq": "FAQ",
     "contact": "Contacto"
   },
   "hero": {
@@ -25,7 +26,7 @@
     "hourlyDesc": "18 €/hora, mínimo 2 horas. Mantenemos tu casa limpia de forma regular: cocina, baño, polvo y suelos, según tu lista.",
     "hourlyCta": "Calcular limpieza",
     "dryTitle": "Limpieza de tapicería",
-    "dryDesc": "Salida desde 40 € + precio por sofá, sillón, silla, colchón o alfombra. Limpiamos en tu domicilio, bajo pedido.",
+    "dryDesc": "Pedido mínimo 40 €. Si las piezas cuestan más, pagas solo eso (la salida ya va incluida). Limpiamos en domicilio.",
     "dryCta": "Calcular tapicería",
     "safeTitle": "Química segura",
     "safeDesc": "Usamos productos pensados para el hogar: sin olor agresivo y con fórmulas cuidadosas para telas y superficies.",
@@ -45,8 +46,9 @@
   },
   "calculator": {
     "title": "Calcula tu precio",
-    "sub": "Primero elige el servicio: la limpieza por horas y la de tapicería se calculan distinto.",
-    "pickService": "¿Qué necesitas?",
+    "sub": "Arma tu pedido — por horas, tapicería o ambos — y reserva.",
+    "pickService": "¿Qué necesitas? Puedes elegir ambos.",
+    "pickBothHint": "Marca limpieza por horas y/o tapicería arriba para ver el precio.",
     "hourlyTab": "Limpieza por horas",
     "dryTab": "Limpieza de tapicería",
     "hourlyHint": "Casa limpia a menudo: cocina, polvo, suelos.",
@@ -57,7 +59,9 @@
     "increaseHours": "Más horas",
     "minHoursHint": "Mínimo 2 horas",
     "total": "Total estimado",
-    "visitFee": "Salida desde",
+    "visitFee": "Pedido mínimo",
+    "visitFeeHint": "Si las piezas suman menos de 40 €, el pedido es 40 €. Si suman más — solo pagas las piezas.",
+    "visitFeeApplied": "Aplicado el pedido mínimo de 40 €",
     "selectItems": "Elige lo que hay que limpiar",
     "bothSides": "Por ambos lados",
     "carpetSize": "Tamaño de la alfombra",
@@ -87,17 +91,20 @@
   },
   "form": {
     "title": "Reserva en 2 pasos",
-    "sub": "Paso 1 — servicio y hora. Paso 2 — tus datos.",
+    "sub": "Paso 1 — tu pedido y hora. Paso 2 — dirección y contactos.",
     "step1Title": "Paso 1. Servicio y hora",
     "step1Hint": "Puedes elegir uno o ambos: limpieza por horas y tapicería.",
-    "step1Error": "Elige al menos un servicio, fecha y hora",
-    "continue": "Siguiente — datos",
+    "yourOrder": "Tu pedido de la calculadora",
+    "changeServices": "Cambiar servicios",
+    "step1Error": "Elige al menos un servicio, día y hora",
+    "continue": "Siguiente — dirección y contactos",
     "back": "Atrás",
     "pickDay": "Día",
     "pickSlot": "Hora",
     "name": "Nombre",
     "phone": "Teléfono",
     "address": "Barrio / dirección",
+    "addressPlaceholder": "Barrio o calle en Valencia",
     "date": "Fecha deseada",
     "time": "Hora deseada",
     "service": "Servicios",
@@ -120,6 +127,28 @@
     "galleryAlt": "Trabajo de limpieza Miss Clean",
     "openProfile": "Abrir Instagram",
     "watch": "Ver video"
+  },
+  "faq": {
+    "title": "Preguntas frecuentes",
+    "sub": "Limpieza y tapicería en Valencia — respuestas claras.",
+    "items": [
+      {
+        "q": "¿Cuánto cuesta la limpieza por horas en Valencia?",
+        "a": "18 €/hora, mínimo 2 horas. Calcula el total en la calculadora y reserva online."
+      },
+      {
+        "q": "¿Cuánto cuesta la limpieza de sofás / tapicería en Valencia?",
+        "a": "Pedido mínimo 40 €. Si las piezas suman más (por ejemplo un sofá de 50 €), pagas solo ese precio. Trabajamos a domicilio."
+      },
+      {
+        "q": "¿Hacéis химчистку / limpieza en seco de muebles en Valencia?",
+        "a": "Sí: sofás, sillones, sillas, colchones y alfombras. Reserva en la web o por WhatsApp +34 651 156 133."
+      },
+      {
+        "q": "¿Cómo reservo una limpieza o химчистку?",
+        "a": "Arma el pedido en la calculadora, elige día y hora, deja dirección y teléfono. También puedes escribir por WhatsApp. Último pedido del día: antes de las 20:00."
+      }
+    ]
   },
   "contact": {
     "title": "Contacto",

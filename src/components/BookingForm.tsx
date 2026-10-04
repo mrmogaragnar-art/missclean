@@ -1,20 +1,22 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import type { DryCleanItemId } from "@/config/site";
 import { siteConfig } from "@/config/site";
 import { useI18n } from "@/i18n/I18nProvider";
 import {
   calcDryRange,
   calcHourlyTotal,
+  dryNeedsMinimumTopUp,
   formatMoneyRange,
-  type ServiceType,
 } from "@/lib/pricing";
+import { formatDayLabel, getBookableDays } from "@/lib/slots";
 
 export type CalcSnapshot = {
   /** Changes on every "Use in form" click so the form always re-syncs */
   id: number;
-  service: ServiceType;
+  wantHourly: boolean;
+  wantDry: boolean;
   hours: number;
   items: DryCleanItemId[];
   bothSides: DryCleanItemId[];
@@ -50,22 +52,21 @@ export function BookingForm({ snapshot }: Props) {
   const [stepError, setStepError] = useState(false);
   const [totalLabel, setTotalLabel] = useState("");
 
+  const days = useMemo(() => getBookableDays(), []);
+
   useEffect(() => {
     if (!snapshot) return;
-    if (snapshot.service === "hourly") {
-      setWantHourly(true);
-      setHours(snapshot.hours);
-      setCarpetSqm(0);
-    } else {
-      setWantDry(true);
-      setItems([...snapshot.items]);
-      setBothSides([...(snapshot.bothSides ?? [])]);
-      setCarpetSqm(snapshot.carpetSqm ?? 0);
-    }
+    setWantHourly(snapshot.wantHourly);
+    setWantDry(snapshot.wantDry);
+    setHours(snapshot.hours);
+    setItems([...snapshot.items]);
+    setBothSides([...(snapshot.bothSides ?? [])]);
+    setCarpetSqm(snapshot.carpetSqm ?? 0);
     setTotalLabel(snapshot.totalLabel || "");
     setFromCalculator(true);
     setStep(1);
     setStepError(false);
+    setStatus("idle");
   }, [snapshot?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function hourlyPart(): number {
@@ -87,14 +88,23 @@ export function BookingForm({ snapshot }: Props) {
   }
 
   function displayTotalLabel(): string {
-    if (fromCalculator && totalLabel && !wantHourly) return totalLabel;
+    if (fromCalculator && totalLabel && wantHourly === Boolean(snapshot?.wantHourly) && wantDry === Boolean(snapshot?.wantDry)) {
+      const hoursMatch = !wantHourly || hours === snapshot?.hours;
+      const dryMatch =
+        !wantDry ||
+        (items.join() === (snapshot?.items ?? []).join() &&
+          bothSides.join() === (snapshot?.bothSides ?? []).join() &&
+          carpetSqm === (snapshot?.carpetSqm ?? 0));
+      if (hoursMatch && dryMatch) return totalLabel;
+    }
+
     const hourly = hourlyPart();
     const dry = dryPart();
     const from = hourly + dry.from;
     const to = hourly + dry.to;
     if (!wantHourly && !wantDry) return "0 €";
     const money =
-      wantDry && items.length === 0 && carpetSqm > 0
+      wantDry && items.length === 0 && carpetSqm > 0 && !wantHourly
         ? `${siteConfig.prices.visitFee} €`
         : !wantDry && wantHourly
           ? `${hourly} €`
@@ -128,8 +138,11 @@ export function BookingForm({ snapshot }: Props) {
         items.length === 0 && carpetSqm > 0
           ? `${siteConfig.prices.visitFee} €`
           : formatMoneyRange(dry.from, dry.to);
+      const minNote = dryNeedsMinimumTopUp(items, bothSides, carpetSqm)
+        ? ` · ${t.calculator.visitFeeApplied}`
+        : "";
       parts.push(
-        `${t.form.serviceDry}: ${t.calculator.visitFee} ${siteConfig.prices.visitFee} € + ${labels.join(", ") || t.form.dryItemsLater} = ${money}${carpetSqm > 0 ? ` + ${t.calculator.carpetPriceNote}` : ""}`,
+        `${t.form.serviceDry}: ${labels.join(", ") || t.form.dryItemsLater} = ${money}${carpetSqm > 0 ? ` + ${t.calculator.carpetPriceNote}` : ""}${minNote}`,
       );
     }
     return parts.join(" · ") || "—";
@@ -170,9 +183,11 @@ export function BookingForm({ snapshot }: Props) {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
-    if ((!wantHourly && !wantDry) || !date || !time) {
-      setStep(1);
-      setStepError(true);
+    if ((!wantHourly && !wantDry) || !date || !time || !name || !phone || !address) {
+      if ((!wantHourly && !wantDry) || !date || !time) {
+        setStep(1);
+        setStepError(true);
+      }
       return;
     }
     setStatus("sending");
@@ -210,11 +225,31 @@ export function BookingForm({ snapshot }: Props) {
       setWantDry(false);
       setHours(siteConfig.prices.minHours);
       setItems([]);
+      setBothSides([]);
+      setCarpetSqm(0);
       setFromCalculator(false);
+      setTotalLabel("");
     } catch {
       setStatus("error");
     }
   }
+
+  const hasOrder = wantHourly || wantDry;
+  const dryItemsLabel =
+    wantDry && (items.length > 0 || carpetSqm > 0)
+      ? [
+          ...items.map((id) =>
+            bothSides.includes(id)
+              ? `${t.calculator.items[id]} (${t.calculator.bothSides})`
+              : t.calculator.items[id],
+          ),
+          carpetSqm > 0
+            ? `${t.calculator.groups.carpets} ${carpetSqm} ${t.calculator.carpetUnit}`
+            : null,
+        ]
+          .filter(Boolean)
+          .join(", ")
+      : null;
 
   return (
     <section className="section book" id="book">
@@ -236,47 +271,72 @@ export function BookingForm({ snapshot }: Props) {
       <form className="booking-form" onSubmit={onSubmit}>
         {step === 1 ? (
           <>
-            <div className="field-full">
-              <p className="field-label">{t.form.step1Title}</p>
-              <p className="muted book-step-hint">{t.form.step1Hint}</p>
-            </div>
+            {fromCalculator && hasOrder ? (
+              <div className="form-summary field-full is-from-calc">
+                <p className="form-order-label">{t.form.yourOrder}</p>
+                <p>
+                  <strong>{serviceLabel()}</strong>
+                </p>
+                <p>{detailsText()}</p>
+                <p>
+                  <strong>
+                    {t.calculator.total}: {displayTotalLabel()}
+                  </strong>
+                </p>
+              </div>
+            ) : (
+              <div className="field-full">
+                <p className="field-label">{t.form.step1Title}</p>
+                <p className="muted book-step-hint">{t.form.step1Hint}</p>
+              </div>
+            )}
 
-            <div
-              className="service-pick field-full"
-              role="group"
-              aria-label={t.form.service}
-            >
+            {!fromCalculator || !hasOrder ? (
+              <div
+                className="service-pick field-full"
+                role="group"
+                aria-label={t.form.service}
+              >
+                <button
+                  type="button"
+                  aria-pressed={wantHourly}
+                  className={`service-pick-card ${wantHourly ? "is-active" : ""}`}
+                  onClick={toggleHourly}
+                >
+                  <span className="service-pick-body service-pick-body-solo">
+                    <span className="service-pick-title">
+                      {wantHourly ? "✓ " : ""}
+                      {t.form.serviceHourly}
+                    </span>
+                    <span className="service-pick-desc">{t.form.serviceHourlyHint}</span>
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={wantDry}
+                  className={`service-pick-card ${wantDry ? "is-active" : ""}`}
+                  onClick={toggleDry}
+                >
+                  <span className="service-pick-body service-pick-body-solo">
+                    <span className="service-pick-title">
+                      {wantDry ? "✓ " : ""}
+                      {t.form.serviceDry}
+                    </span>
+                    <span className="service-pick-desc">{t.form.serviceDryHint}</span>
+                  </span>
+                </button>
+              </div>
+            ) : (
               <button
                 type="button"
-                aria-pressed={wantHourly}
-                className={`service-pick-card ${wantHourly ? "is-active" : ""}`}
-                onClick={toggleHourly}
+                className="btn btn-ghost field-full book-change-services"
+                onClick={() => setFromCalculator(false)}
               >
-                <span className="service-pick-body service-pick-body-solo">
-                  <span className="service-pick-title">
-                    {wantHourly ? "✓ " : ""}
-                    {t.form.serviceHourly}
-                  </span>
-                  <span className="service-pick-desc">{t.form.serviceHourlyHint}</span>
-                </span>
+                {t.form.changeServices}
               </button>
-              <button
-                type="button"
-                aria-pressed={wantDry}
-                className={`service-pick-card ${wantDry ? "is-active" : ""}`}
-                onClick={toggleDry}
-              >
-                <span className="service-pick-body service-pick-body-solo">
-                  <span className="service-pick-title">
-                    {wantDry ? "✓ " : ""}
-                    {t.form.serviceDry}
-                  </span>
-                  <span className="service-pick-desc">{t.form.serviceDryHint}</span>
-                </span>
-              </button>
-            </div>
+            )}
 
-            {wantHourly ? (
+            {wantHourly && !fromCalculator ? (
               <div className="field-full book-hours">
                 <p className="field-label">{t.calculator.hours}</p>
                 <div className="hours-stepper">
@@ -309,51 +369,55 @@ export function BookingForm({ snapshot }: Props) {
               <p className="muted field-full book-dry-hint">{t.form.dryHintCalc}</p>
             ) : null}
 
-            {wantDry && (items.length > 0 || carpetSqm > 0) ? (
+            {wantDry && dryItemsLabel && !fromCalculator ? (
               <p className="muted field-full">
-                {t.form.serviceDry}:{" "}
-                {[
-                  ...items.map((id) =>
-                    bothSides.includes(id)
-                      ? `${t.calculator.items[id]} (${t.calculator.bothSides})`
-                      : t.calculator.items[id],
-                  ),
-                  carpetSqm > 0
-                    ? `${t.calculator.groups.carpets} ${carpetSqm} ${t.calculator.carpetUnit} (${t.calculator.carpetPriceNote})`
-                    : null,
-                ]
-                  .filter(Boolean)
-                  .join(", ")}
+                {t.form.serviceDry}: {dryItemsLabel}
               </p>
             ) : null}
 
-            <label className="field">
-              <span>{t.form.date}</span>
-              <input
-                required
-                type="date"
-                value={date}
-                onChange={(e) => {
-                  setDate(e.target.value);
-                  setStepError(false);
-                }}
-              />
-            </label>
+            <div className="field-full">
+              <p className="field-label">{t.form.pickDay}</p>
+              <div className="slot-row" role="group" aria-label={t.form.pickDay}>
+                {days.map((day) => {
+                  const label = formatDayLabel(day.date, locale);
+                  return (
+                    <button
+                      key={day.key}
+                      type="button"
+                      className={`slot-chip ${date === day.key ? "is-active" : ""}`}
+                      onClick={() => {
+                        setDate(day.key);
+                        setStepError(false);
+                      }}
+                    >
+                      <span className="slot-chip-top">{label.weekday}</span>
+                      <span className="slot-chip-bottom">{label.dayMonth}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
-            <label className="field">
-              <span>{t.form.time}</span>
-              <input
-                required
-                type="time"
-                value={time}
-                onChange={(e) => {
-                  setTime(e.target.value);
-                  setStepError(false);
-                }}
-              />
-            </label>
+            <div className="field-full">
+              <p className="field-label">{t.form.pickSlot}</p>
+              <div className="slot-row" role="group" aria-label={t.form.pickSlot}>
+                {siteConfig.bookingSlots.map((slot) => (
+                  <button
+                    key={slot}
+                    type="button"
+                    className={`slot-chip slot-chip-time ${time === slot ? "is-active" : ""}`}
+                    onClick={() => {
+                      setTime(slot);
+                      setStepError(false);
+                    }}
+                  >
+                    {slot}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-            {(wantHourly || wantDry) && (
+            {hasOrder && !fromCalculator ? (
               <div className="form-summary field-full">
                 <p>{detailsText()}</p>
                 <p>
@@ -362,7 +426,7 @@ export function BookingForm({ snapshot }: Props) {
                   </strong>
                 </p>
               </div>
-            )}
+            ) : null}
 
             {stepError ? (
               <p className="form-error field-full">{t.form.step1Error}</p>
@@ -395,6 +459,17 @@ export function BookingForm({ snapshot }: Props) {
               </p>
             </div>
 
+            <label className="field field-full">
+              <span>{t.form.address}</span>
+              <input
+                required
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                autoComplete="street-address"
+                placeholder={t.form.addressPlaceholder}
+              />
+            </label>
+
             <label className="field">
               <span>{t.form.name}</span>
               <input
@@ -413,23 +488,14 @@ export function BookingForm({ snapshot }: Props) {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 autoComplete="tel"
-              />
-            </label>
-
-            <label className="field field-full">
-              <span>{t.form.address}</span>
-              <input
-                required
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                autoComplete="street-address"
+                placeholder="+34 …"
               />
             </label>
 
             <label className="field field-full">
               <span>{t.form.comment}</span>
               <textarea
-                rows={3}
+                rows={2}
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
               />

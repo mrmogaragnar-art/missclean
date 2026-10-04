@@ -15,6 +15,8 @@ export type DryCleanPrice = {
 export const siteConfig = {
   brand: "Miss Clean",
   city: "Valencia",
+  /** Канонический URL сайта (мета, sitemap, schema, llms.txt) */
+  siteUrl: "https://miss-clean.vercel.app",
   lastOrderHour: 20,
 
   /** Телефон для звонков */

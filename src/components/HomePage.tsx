@@ -6,6 +6,7 @@ import { BeforeAfter } from "@/components/BeforeAfter";
 import { BookingForm, type CalcSnapshot } from "@/components/BookingForm";
 import { Calculator } from "@/components/Calculator";
 import { Contact } from "@/components/Contact";
+import { Faq } from "@/components/Faq";
 import { FloatingWhatsApp } from "@/components/FloatingWhatsApp";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -35,6 +36,7 @@ export function HomePage() {
         <BookingForm snapshot={snapshot} />
         <Works />
         <Services />
+        <Faq />
         <Contact />
       </main>
       <FloatingWhatsApp />

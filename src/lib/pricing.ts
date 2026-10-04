@@ -56,6 +56,22 @@ function itemSum(
   }, 0);
 }
 
+/** Сумма позиций химчистки без минимального выезда */
+export function calcDryItemsRange(
+  itemIds: DryCleanItemId[],
+  bothSides: DryCleanItemId[] = [],
+): { from: number; to: number } {
+  return {
+    from: itemSum(itemIds, bothSides, "from"),
+    to: itemSum(itemIds, bothSides, "to"),
+  };
+}
+
+/**
+ * Итог химчистки: минимум заказа = visitFee (40 €).
+ * Если сумма позиций ниже — поднимаем до 40 €.
+ * Если выше — считаем только позиции (выезд уже «заложен»).
+ */
 export function calcDryRange(
   itemIds: DryCleanItemId[],
   bothSides: DryCleanItemId[] = [],
@@ -63,14 +79,18 @@ export function calcDryRange(
 ): { from: number; to: number } {
   const carpetSqm = options?.carpetSqm ?? 0;
   if (itemIds.length === 0 && carpetSqm <= 0) return { from: 0, to: 0 };
+
+  const fee = siteConfig.prices.visitFee;
+
   if (itemIds.length === 0 && carpetSqm > 0) {
-    const fee = siteConfig.prices.visitFee;
     return { from: fee, to: fee };
   }
-  const from =
-    siteConfig.prices.visitFee + itemSum(itemIds, bothSides, "from");
-  const to = siteConfig.prices.visitFee + itemSum(itemIds, bothSides, "to");
-  return { from, to };
+
+  const items = calcDryItemsRange(itemIds, bothSides);
+  return {
+    from: Math.max(fee, items.from),
+    to: Math.max(fee, items.to),
+  };
 }
 
 /** Нижняя граница сметы (для заявки / «от») */
@@ -79,6 +99,17 @@ export function calcDryTotal(
   bothSides: DryCleanItemId[] = [],
 ): number {
   return calcDryRange(itemIds, bothSides).from;
+}
+
+/** Нужно ли дотянуть заказ до минимума 40 € */
+export function dryNeedsMinimumTopUp(
+  itemIds: DryCleanItemId[],
+  bothSides: DryCleanItemId[] = [],
+  carpetSqm = 0,
+): boolean {
+  if (itemIds.length === 0 && carpetSqm <= 0) return false;
+  if (itemIds.length === 0 && carpetSqm > 0) return true;
+  return calcDryItemsRange(itemIds, bothSides).from < siteConfig.prices.visitFee;
 }
 
 export function hasBothSidesOption(id: DryCleanItemId): boolean {
