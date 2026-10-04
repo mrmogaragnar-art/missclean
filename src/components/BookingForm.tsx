@@ -13,7 +13,7 @@ import {
 import { formatDayLabel, getBookableDays } from "@/lib/slots";
 
 export type CalcSnapshot = {
-  /** Changes on every "Use in form" click so the form always re-syncs */
+  /** Changes whenever the calculator selection updates */
   id: number;
   wantHourly: boolean;
   wantDry: boolean;
@@ -56,6 +56,7 @@ export function BookingForm({ snapshot }: Props) {
 
   useEffect(() => {
     if (!snapshot) return;
+    const hasOrder = snapshot.wantHourly || snapshot.wantDry;
     setWantHourly(snapshot.wantHourly);
     setWantDry(snapshot.wantDry);
     setHours(snapshot.hours);
@@ -63,10 +64,9 @@ export function BookingForm({ snapshot }: Props) {
     setBothSides([...(snapshot.bothSides ?? [])]);
     setCarpetSqm(snapshot.carpetSqm ?? 0);
     setTotalLabel(snapshot.totalLabel || "");
-    setFromCalculator(true);
-    setStep(1);
+    setFromCalculator(hasOrder);
     setStepError(false);
-    setStatus("idle");
+    // Keep contact step if user is already filling it
   }, [snapshot?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function hourlyPart(): number {

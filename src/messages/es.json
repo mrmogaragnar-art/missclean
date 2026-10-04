@@ -87,7 +87,8 @@
       "mattress_single": "Colchón individual",
       "mattress_double": "Colchón doble"
     },
-    "useInForm": "Ir a reservar con este precio"
+    "useInForm": "Ir a reservar",
+    "syncedHint": "ya en el formulario · toca aquí"
   },
   "form": {
     "title": "Deja tu solicitud",

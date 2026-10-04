@@ -87,7 +87,8 @@
       "mattress_single": "Single mattress",
       "mattress_double": "Double mattress"
     },
-    "useInForm": "Book with this price"
+    "useInForm": "Go to booking",
+    "syncedHint": "already in the form below · tap"
   },
   "form": {
     "title": "Send a request",

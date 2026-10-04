@@ -791,7 +791,17 @@ main {
   margin: 0.25rem 0 0;
 }
 
+.book {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
 .book-panel {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   padding: 1.35rem 1.25rem 1.45rem;
   border: 1px solid var(--line);
   border-radius: calc(var(--radius) + 0.2rem);
@@ -802,16 +812,22 @@ main {
       rgba(247, 240, 232, 0.88) 100%
     );
   box-shadow: var(--shadow);
+  overflow-x: hidden;
 }
 
 .slot-row {
   display: flex;
   flex-wrap: nowrap;
   gap: 0.5rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
   padding-bottom: 0.35rem;
-  margin-bottom: 0.85rem;
+  margin: 0 0 0.35rem;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
 }
 
 .slot-chip {
@@ -1364,15 +1380,45 @@ main {
 .calc-total {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 1rem;
-  margin: 0 0 1rem;
+  width: 100%;
+  margin: 0;
   padding: 1rem 1.1rem;
   border: 1px solid var(--line);
   border-radius: 1.1rem;
   background: rgba(255, 253, 249, 0.92);
+  font: inherit;
   font-size: 1.1rem;
+  color: inherit;
+  text-align: left;
   box-shadow: var(--shadow);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.15s ease;
+}
+
+.calc-total > span {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.calc-total-hint {
+  font-style: normal;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--terracotta);
+}
+
+.calc-total.is-live {
+  border-color: rgba(232, 90, 60, 0.45);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 253, 249, 0.98) 0%,
+    rgba(232, 90, 60, 0.08) 100%
+  );
 }
 
 .calc-total.is-sticky {
@@ -1380,6 +1426,12 @@ main {
   bottom: 0.75rem;
   z-index: 12;
   backdrop-filter: blur(8px);
+}
+
+.calc-total:hover,
+.calc-total:focus-visible {
+  border-color: var(--terracotta);
+  outline: none;
 }
 
 .calc-total strong {
@@ -1391,11 +1443,31 @@ main {
 .booking-form {
   display: grid;
   gap: 1.1rem;
-  max-width: 40rem;
+  width: 100%;
+  max-width: min(40rem, 100%);
+  min-width: 0;
+}
+
+.booking-form > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.booking-form .field,
+.booking-form input,
+.booking-form textarea,
+.booking-form .btn {
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .book .section-head {
-  max-width: 40rem;
+  max-width: min(40rem, 100%);
+}
+
+.book-panel .service-pick {
+  width: 100%;
+  margin-bottom: 0;
 }
 
 .form-summary {
@@ -1404,6 +1476,8 @@ main {
   border: 1px solid rgba(232, 90, 60, 0.18);
   border-radius: calc(var(--radius) - 0.15rem);
   background: rgba(255, 253, 249, 0.72);
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .form-summary.is-from-calc {
@@ -1730,6 +1804,39 @@ main {
 @media (max-width: 719px) {
   main {
     width: min(1120px, calc(100% - 1.25rem));
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .book-panel {
+    padding: 1rem 0.85rem 1.15rem;
+    border-radius: var(--radius);
+  }
+
+  .book-panel .service-pick-card {
+    grid-template-columns: 1fr;
+  }
+
+  .book-panel .service-pick-body-solo {
+    padding: 0.9rem 0.95rem;
+  }
+
+  .book-panel .service-pick-title {
+    font-size: 1.05rem;
+  }
+
+  .form-summary {
+    padding: 0.85rem 0.9rem;
+    font-size: 0.92rem;
+  }
+
+  .slot-chip {
+    min-width: 4.2rem;
+    padding: 0.55rem 0.65rem;
+  }
+
+  .hours-stepper {
+    max-width: 100%;
   }
 
   .site-header {
@@ -1901,7 +2008,6 @@ main {
     bottom: 0.5rem;
   }
 
-  .calc-apply,
   .booking-form .btn {
     width: 100%;
   }

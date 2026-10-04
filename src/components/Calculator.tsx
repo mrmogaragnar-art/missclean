@@ -54,7 +54,8 @@ export type CalcApplyPayload = {
 };
 
 type Props = {
-  onApply: (payload: CalcApplyPayload) => void;
+  /** Live sync into the booking form below */
+  onChange: (payload: CalcApplyPayload) => void;
 };
 
 function readServiceFromHash(): ServiceType | null {
@@ -65,7 +66,7 @@ function readServiceFromHash(): ServiceType | null {
   return null;
 }
 
-export function Calculator({ onApply }: Props) {
+export function Calculator({ onChange }: Props) {
   const { t } = useI18n();
   const [wantHourly, setWantHourly] = useState(false);
   const [wantDry, setWantDry] = useState(false);
@@ -106,7 +107,6 @@ export function Calculator({ onApply }: Props) {
 
   const dryReady = wantDry && (items.length > 0 || carpetSqm > 0);
   const hourlyReady = wantHourly;
-  const canApply = hourlyReady || dryReady;
 
   const dryTotalLabel = useMemo(() => {
     if (!dryReady) return "0 €";
@@ -148,6 +148,31 @@ export function Calculator({ onApply }: Props) {
     carpetSqm,
     dryRange,
     t.calculator.carpetPriceNote,
+  ]);
+
+  useEffect(() => {
+    const dryFrom = dryReady ? dryRange.from : 0;
+    onChange({
+      wantHourly: hourlyReady,
+      wantDry: dryReady,
+      hours: hourlyReady ? hours : siteConfig.prices.minHours,
+      items: dryReady ? [...items] : [],
+      bothSides: dryReady ? [...bothSides] : [],
+      carpetSqm: dryReady ? carpetSqm : 0,
+      total: (hourlyReady ? hourlyTotal : 0) + dryFrom,
+      totalLabel,
+    });
+  }, [
+    onChange,
+    hourlyReady,
+    dryReady,
+    hours,
+    items,
+    bothSides,
+    carpetSqm,
+    dryRange.from,
+    hourlyTotal,
+    totalLabel,
   ]);
 
   const carpetScale =
@@ -467,32 +492,20 @@ export function Calculator({ onApply }: Props) {
         <p className="muted calc-empty-hint">{t.calculator.pickBothHint}</p>
       ) : null}
 
-      <div className="calc-total is-sticky">
-        <span>{t.calculator.total}</span>
-        <strong>{totalLabel}</strong>
-      </div>
-
       <button
         type="button"
-        className="btn btn-primary calc-apply"
-        disabled={!canApply}
+        className={`calc-total is-sticky ${hourlyReady || dryReady ? "is-live" : ""}`}
         onClick={() => {
-          if (!canApply) return;
-          const dryFrom = dryReady ? dryRange.from : 0;
-          onApply({
-            wantHourly,
-            wantDry: dryReady,
-            hours: wantHourly ? hours : siteConfig.prices.minHours,
-            items: dryReady ? [...items] : [],
-            bothSides: dryReady ? [...bothSides] : [],
-            carpetSqm: dryReady ? carpetSqm : 0,
-            total: (wantHourly ? hourlyTotal : 0) + dryFrom,
-            totalLabel,
-          });
           document.getElementById("book")?.scrollIntoView({ behavior: "smooth" });
         }}
       >
-        {t.calculator.useInForm}
+        <span>
+          {t.calculator.total}
+          {(hourlyReady || dryReady) ? (
+            <em className="calc-total-hint">{t.calculator.syncedHint}</em>
+          ) : null}
+        </span>
+        <strong>{totalLabel}</strong>
       </button>
     </section>
   );

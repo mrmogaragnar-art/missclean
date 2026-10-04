@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { BeforeAfter } from "@/components/BeforeAfter";
 import { BookingForm, type CalcSnapshot } from "@/components/BookingForm";
-import { Calculator } from "@/components/Calculator";
+import { Calculator, type CalcApplyPayload } from "@/components/Calculator";
 import { Contact } from "@/components/Contact";
 import { Faq } from "@/components/Faq";
 import { FloatingWhatsApp } from "@/components/FloatingWhatsApp";
@@ -15,14 +15,31 @@ import { Services } from "@/components/Services";
 import { VisitTracker } from "@/components/VisitTracker";
 import { Works } from "@/components/Works";
 
+function sameSnapshot(
+  prev: CalcSnapshot | null,
+  next: CalcApplyPayload,
+): boolean {
+  if (!prev) return false;
+  return (
+    prev.wantHourly === next.wantHourly &&
+    prev.wantDry === next.wantDry &&
+    prev.hours === next.hours &&
+    prev.carpetSqm === next.carpetSqm &&
+    prev.totalLabel === next.totalLabel &&
+    prev.items.join() === next.items.join() &&
+    prev.bothSides.join() === next.bothSides.join()
+  );
+}
+
 export function HomePage() {
   const [snapshot, setSnapshot] = useState<CalcSnapshot | null>(null);
 
-  function applyFromCalculator(
-    payload: Omit<CalcSnapshot, "id">,
-  ) {
-    setSnapshot({ ...payload, id: Date.now() });
-  }
+  const syncFromCalculator = useCallback((payload: CalcApplyPayload) => {
+    setSnapshot((prev) => {
+      if (sameSnapshot(prev, payload)) return prev;
+      return { ...payload, id: Date.now() };
+    });
+  }, []);
 
   return (
     <>
@@ -32,7 +49,7 @@ export function HomePage() {
       <main>
         <Hero />
         <BeforeAfter />
-        <Calculator onApply={applyFromCalculator} />
+        <Calculator onChange={syncFromCalculator} />
         <BookingForm snapshot={snapshot} />
         <Works />
         <Services />
