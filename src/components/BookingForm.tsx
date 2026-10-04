@@ -258,17 +258,7 @@ export function BookingForm({ snapshot }: Props) {
         <p>{t.form.sub}</p>
       </div>
 
-      <div className="book-steps" aria-hidden>
-        <span className={`book-step-dot ${step === 1 ? "is-active" : "is-done"}`}>
-          1
-        </span>
-        <span className="book-step-line" />
-        <span className={`book-step-dot ${step === 2 ? "is-active" : ""}`}>
-          2
-        </span>
-      </div>
-
-      <form className="booking-form" onSubmit={onSubmit}>
+      <form className="booking-form book-panel" onSubmit={onSubmit}>
         {step === 1 ? (
           <>
             {fromCalculator && hasOrder ? (

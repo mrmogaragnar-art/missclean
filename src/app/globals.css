@@ -787,42 +787,21 @@ main {
   font-size: 0.95rem;
 }
 
-.book-steps {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  margin-bottom: 1.25rem;
-  max-width: 10rem;
-}
-
-.book-step-dot {
-  width: 1.85rem;
-  height: 1.85rem;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  font-size: 0.85rem;
-  font-weight: 800;
-  border: 2px solid var(--line);
-  color: var(--muted);
-  background: var(--white);
-}
-
-.book-step-dot.is-active,
-.book-step-dot.is-done {
-  border-color: var(--terracotta);
-  background: var(--terracotta);
-  color: white;
-}
-
-.book-step-line {
-  flex: 1;
-  height: 2px;
-  background: var(--line);
-}
-
 .book-step-hint {
-  margin: 0.25rem 0 0.85rem;
+  margin: 0.25rem 0 0;
+}
+
+.book-panel {
+  padding: 1.35rem 1.25rem 1.45rem;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) + 0.2rem);
+  background:
+    linear-gradient(
+      165deg,
+      rgba(255, 253, 249, 0.96) 0%,
+      rgba(247, 240, 232, 0.88) 100%
+    );
+  box-shadow: var(--shadow);
 }
 
 .slot-row {
@@ -1411,21 +1390,39 @@ main {
 
 .booking-form {
   display: grid;
-  gap: 1rem;
+  gap: 1.1rem;
+  max-width: 40rem;
+}
+
+.book .section-head {
   max-width: 40rem;
 }
 
 .form-summary {
-  padding: 0.95rem 1rem;
+  padding: 1rem 1.1rem;
   color: var(--muted);
-  border: 1px solid var(--line);
-  border-radius: 1rem;
-  background: rgba(255, 253, 249, 0.88);
+  border: 1px solid rgba(232, 90, 60, 0.18);
+  border-radius: calc(var(--radius) - 0.15rem);
+  background: rgba(255, 253, 249, 0.72);
 }
 
 .form-summary.is-from-calc {
-  border-color: rgba(232, 90, 60, 0.45);
-  background: rgba(232, 90, 60, 0.08);
+  border-color: rgba(232, 90, 60, 0.35);
+  background: linear-gradient(
+    135deg,
+    rgba(232, 90, 60, 0.1) 0%,
+    rgba(255, 253, 249, 0.85) 70%
+  );
+}
+
+.book-panel .service-pick-card {
+  background: rgba(255, 253, 249, 0.95);
+}
+
+.book-panel .field-label {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.05rem;
+  color: var(--ink);
 }
 
 .form-summary p {
